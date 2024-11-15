@@ -34,6 +34,6 @@ public class Product {
 
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @Column(name = "unit_id")
-    Unit unit;
+    @Column(name = "unit_id", insertable = false, updatable = false)
+     Unit unit;
 }
