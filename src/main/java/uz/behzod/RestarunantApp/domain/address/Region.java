@@ -1,13 +1,13 @@
-package uz.behzod.RestarunantApp.domain;
+package uz.behzod.RestarunantApp.domain.address;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @Table(name = "region")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Region {

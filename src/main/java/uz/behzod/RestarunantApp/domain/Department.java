@@ -1,13 +1,14 @@
 package uz.behzod.RestarunantApp.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import uz.behzod.RestarunantApp.domain.branch.Branch;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @Table(name = "department")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Department {
@@ -16,10 +17,12 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @Column(name = "name")
+    @NotNull
+    @Column(name = "name", nullable = false)
     String name;
 
-    @Column(name = "branch_id")
+    @NotNull
+    @Column(name = "branch_id", nullable = false)
     Long branchId;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

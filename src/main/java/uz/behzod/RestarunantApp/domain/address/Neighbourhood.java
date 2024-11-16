@@ -1,20 +1,18 @@
-package uz.behzod.RestarunantApp.domain;
+package uz.behzod.RestarunantApp.domain.address;
 
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@Table(name = "neighbour")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "district")
-public class District {
+public class Neighbourhood {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +21,10 @@ public class District {
     @Column(name = "name")
     String name;
 
-    @Column(name = "region_id", nullable = false)
-    Long regionId;
+    @Column(name = "district_id")
+    Long districtId;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "region_id", insertable = false, updatable = false)
-    Region region;
-
+    @JoinColumn(name = "district_id", insertable = false, updatable = false)
+    District district;
 }

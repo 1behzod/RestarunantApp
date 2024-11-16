@@ -2,6 +2,7 @@ package uz.behzod.RestarunantApp.domain;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,6 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @Table(name = "position")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Position {
@@ -20,7 +20,8 @@ public class Position {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "name")
+    @NotNull
+    @Column(name = "name", nullable = false)
     String name;
 
 

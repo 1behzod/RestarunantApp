@@ -1,15 +1,16 @@
-package uz.behzod.RestarunantApp.domain;
+package uz.behzod.RestarunantApp.domain.company;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import uz.behzod.RestarunantApp.domain.address.Address;
 
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @Table(name = "company")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Company {
@@ -18,17 +19,19 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "name")
+    @NotNull
+    @Column(name = "name", nullable = false)
     String name;
 
     @Column(name = "brand")
     String brand;
 
-    @Column(name = "tin", nullable = false)
+    @NotNull
+    @Column(name = "tin", unique = true, length = 14, nullable = false)
     String tin;
 
     @Embedded
-    Adress adress;
+    Address adress;
 
 
 }
