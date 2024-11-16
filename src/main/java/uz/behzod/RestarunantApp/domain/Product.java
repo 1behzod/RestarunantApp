@@ -1,4 +1,4 @@
-package uz.behzod.RestarunantApp;
+package uz.behzod.RestarunantApp.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import uz.behzod.RestarunantApp.domain.Unit;
 
 @Entity
 @Getter
