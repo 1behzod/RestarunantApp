@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import uz.behzod.RestarunantApp.domain.product.Product;
@@ -36,8 +35,7 @@ public class MenuItem {
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
     Product product;
 
-    @NotNull
-    @Column(name = "price", nullable = false)
+    @Column(name = "price")
     BigDecimal price;
 
     @NotNull
@@ -47,4 +45,12 @@ public class MenuItem {
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_id", insertable = false, updatable = false)
     Unit unit;
+
+    @NotNull
+    @Column(name = "menu_id", nullable = false)
+    Long menuId;
+
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id", insertable = false, updatable = false)
+    Menu menu;
 }

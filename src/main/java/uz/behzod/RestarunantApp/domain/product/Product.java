@@ -18,7 +18,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    Long id;
 
     @NotNull
     @Column(name = "name", nullable = false)
@@ -35,6 +35,6 @@ public class Product {
     Long unitId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @Column(name = "unit_id", insertable = false, updatable = false)
+    @JoinColumn(name = "unit_id", insertable = false, updatable = false)
     Unit unit;
 }

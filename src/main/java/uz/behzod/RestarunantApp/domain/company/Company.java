@@ -3,7 +3,9 @@ package uz.behzod.RestarunantApp.domain.company;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import uz.behzod.RestarunantApp.domain.address.Address;
 
@@ -27,11 +29,11 @@ public class Company {
     String brand;
 
     @NotNull
-    @Column(name = "tin", unique = true, length = 14, nullable = false)
+    @Column(name = "tin", unique = true, nullable = false)
     String tin;
 
     @Embedded
-    Address adress;
+    Address address;
 
 
 }

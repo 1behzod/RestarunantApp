@@ -33,7 +33,7 @@ public class Branch {
     Company company;
 
     @Embedded
-    Address adress;
+    Address address;
 
 }
 

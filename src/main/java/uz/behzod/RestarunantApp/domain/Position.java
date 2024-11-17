@@ -24,5 +24,4 @@ public class Position {
     @Column(name = "name", nullable = false)
     String name;
 
-
 }

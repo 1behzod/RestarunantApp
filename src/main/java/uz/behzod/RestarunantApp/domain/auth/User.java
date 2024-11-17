@@ -16,8 +16,7 @@ import uz.behzod.RestarunantApp.enums.Role;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@Table(name = "user")
+@Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
 
@@ -25,7 +24,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Size(max = 40) // Wolfeschlegelsteinhausenbergerdorf the longest name (36char)
+    @Size(max = 40)
     @Column(name = "first_name", length = 40)
     String firstName;
 
@@ -33,8 +32,8 @@ public class User {
     @Column(name = "last_name", length = 40)
     String lastName;
 
-    @Size(max = 50)
-    @Column(name = "patronymic", length = 50)
+    @Size(max = 40)
+    @Column(name = "patronymic", length = 40)
     String patronymic;
 
     @Column(name = "username")
@@ -52,21 +51,21 @@ public class User {
     Long positionId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @Column(name = "position_id", insertable = false, updatable = false)
+    @JoinColumn(name = "position_id", insertable = false, updatable = false)
     Position position;
 
     @Column(name = "branch_id", nullable = false)
     Long branchId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @Column(name = "brach_id", insertable = false, updatable = false)
+    @JoinColumn(name = "brach_id", insertable = false, updatable = false)
     Branch branch;
 
     @Column(name = "company_id", nullable = false)
     Long companyId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @Column(name = "company_id", insertable = false, updatable = false)
+    @JoinColumn(name = "company_id", insertable = false, updatable = false)
     Company company;
 
 }

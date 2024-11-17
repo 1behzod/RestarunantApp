@@ -14,7 +14,7 @@ import uz.behzod.RestarunantApp.domain.branch.Branch;
 public class Department {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @NotNull

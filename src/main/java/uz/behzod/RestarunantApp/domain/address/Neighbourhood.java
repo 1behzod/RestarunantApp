@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Getter
 @Setter
-@Table(name = "neighbour")
+@Table(name = "neighbourhood")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Neighbourhood {
 
