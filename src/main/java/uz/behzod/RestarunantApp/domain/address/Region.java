@@ -1,7 +1,6 @@
 package uz.behzod.RestarunantApp.domain.address;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
