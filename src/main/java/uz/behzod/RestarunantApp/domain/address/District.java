@@ -7,17 +7,15 @@ import lombok.Getter;
 
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import uz.behzod.RestarunantApp.domain.SimpleEntity;
 
 @Entity
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "district")
-public class District {
+public class District extends SimpleEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
 
     @Column(name = "name")
     String name;

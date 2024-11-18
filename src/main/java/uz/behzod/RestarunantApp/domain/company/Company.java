@@ -3,10 +3,12 @@ package uz.behzod.RestarunantApp.domain.company;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import uz.behzod.RestarunantApp.domain.SimpleEntity;
 import uz.behzod.RestarunantApp.domain.address.Address;
 
 
@@ -15,11 +17,7 @@ import uz.behzod.RestarunantApp.domain.address.Address;
 @Setter
 @Table(name = "company")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Company {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+public class Company extends SimpleEntity {
 
     @NotNull
     @Column(name = "name", nullable = false)
@@ -29,8 +27,14 @@ public class Company {
     String brand;
 
     @NotNull
+    @Size(min = 9, max = 9)
     @Column(name = "tin", unique = true, nullable = false)
     String tin;
+
+    @NotNull
+    @Size(min = 14, max = 14)
+    @Column(name = "pinfl", unique = true, nullable = false)
+    String pinfl;
 
     @Embedded
     Address address;

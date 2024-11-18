@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import uz.behzod.RestarunantApp.domain.SimpleEntity;
 import uz.behzod.RestarunantApp.domain.branch.Branch;
 
 @Entity
@@ -14,11 +15,7 @@ import uz.behzod.RestarunantApp.domain.branch.Branch;
 @Setter
 @Table(name = "menu")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Menu {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+public class Menu extends SimpleEntity {
 
     @NotNull
     @Column(name = "name", nullable = false)

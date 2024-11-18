@@ -11,11 +11,7 @@ import uz.behzod.RestarunantApp.domain.branch.Branch;
 @Setter
 @Table(name = "department")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Department {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+public class Department extends SimpleEntity {
 
     @NotNull
     @Column(name = "name", nullable = false)

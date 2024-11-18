@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import uz.behzod.RestarunantApp.domain.SimpleEntity;
 import uz.behzod.RestarunantApp.domain.company.Company;
 import uz.behzod.RestarunantApp.domain.address.Address;
 
@@ -14,11 +15,7 @@ import uz.behzod.RestarunantApp.domain.address.Address;
 @Setter
 @Table(name = "branch")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Branch {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+public class Branch extends SimpleEntity {
 
     @NotNull
     @Column(name = "name", nullable = false)

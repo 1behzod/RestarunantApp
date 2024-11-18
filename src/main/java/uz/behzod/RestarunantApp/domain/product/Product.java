@@ -6,6 +6,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.metamodel.mapping.SqlTypedMapping;
+import uz.behzod.RestarunantApp.domain.SimpleEntity;
 import uz.behzod.RestarunantApp.domain.unit.Unit;
 
 @Entity
@@ -13,21 +16,17 @@ import uz.behzod.RestarunantApp.domain.unit.Unit;
 @Setter
 @Table(name = "product")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Product {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+public class Product extends SimpleEntity {
 
     @NotNull
     @Column(name = "name", nullable = false)
     String name;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     String description;
 
     @Column(name = "barcode")
-    Long barcode;
+    String barcode;
 
     @NotNull
     @Column(name = "unit_id", nullable = false)

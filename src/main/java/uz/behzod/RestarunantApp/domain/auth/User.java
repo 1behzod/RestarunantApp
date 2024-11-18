@@ -2,26 +2,29 @@ package uz.behzod.RestarunantApp.domain.auth;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+
+import uz.behzod.RestarunantApp.constants.Constants;
+import uz.behzod.RestarunantApp.domain.Department;
+import uz.behzod.RestarunantApp.domain.SimpleEntity;
 import uz.behzod.RestarunantApp.domain.branch.Branch;
 import uz.behzod.RestarunantApp.domain.company.Company;
 import uz.behzod.RestarunantApp.domain.Position;
 import uz.behzod.RestarunantApp.enums.Role;
+
+import java.io.Serializable;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+public class User extends SimpleEntity {
 
     @Size(max = 40)
     @Column(name = "first_name", length = 40)
@@ -35,7 +38,9 @@ public class User {
     @Column(name = "patronymic", length = 40)
     String patronymic;
 
-    @Column(name = "username")
+    @NotNull
+    @Pattern(regexp = Constants.USERNAME)
+    @Column(name = "username", nullable = false)
     String username;
 
     @NotNull
@@ -53,7 +58,7 @@ public class User {
     @JoinColumn(name = "position_id", insertable = false, updatable = false)
     Position position;
 
-    @Column(name = "branch_id", nullable = false)
+    @Column(name = "branch_id")
     Long branchId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -66,6 +71,13 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "company_id", insertable = false, updatable = false)
     Company company;
+
+    @Column(name = "department_id")
+    Long departmentId;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "department_id", insertable = false, updatable = false)
+    Department department;
 
 }
 

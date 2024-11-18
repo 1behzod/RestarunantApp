@@ -13,11 +13,8 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @Table(name = "position")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Position {
+public class Position extends SimpleEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
 
     @NotNull
     @Column(name = "name", nullable = false)

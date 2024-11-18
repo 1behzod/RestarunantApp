@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import uz.behzod.RestarunantApp.domain.SimpleEntity;
 import uz.behzod.RestarunantApp.domain.product.Product;
 import uz.behzod.RestarunantApp.domain.unit.Unit;
 
@@ -17,11 +18,7 @@ import java.math.BigDecimal;
 @Setter
 @Table(name = "menu_item")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class MenuItem {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+public class MenuItem extends SimpleEntity {
 
     @NotNull
     @Column(name = "name", nullable = false)
@@ -35,7 +32,7 @@ public class MenuItem {
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
     Product product;
 
-    @Column(name = "price")
+    @Column(name = "price", scale = 2, precision = 14)
     BigDecimal price;
 
     @NotNull
