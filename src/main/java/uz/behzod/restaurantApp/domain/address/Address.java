@@ -4,10 +4,14 @@ package uz.behzod.restaurantApp.domain.address;
 import jakarta.persistence.*;
 
 import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Embeddable
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Setter
+@Getter
 public class Address {
 
     @Column(name = "region_id")
@@ -33,4 +37,8 @@ public class Address {
 
     @Column(name = "street")
     String street;
+
+    public void setDistrict(Long districtId) {
+        this.districtId = districtId;
+    }
 }

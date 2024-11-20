@@ -1,7 +1,10 @@
 package uz.behzod.restaurantApp.domain.company;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -38,6 +41,4 @@ public class Company extends SimpleEntity {
 
     @Embedded
     Address address;
-
-
 }

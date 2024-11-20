@@ -9,11 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.behzod.restaurantApp.domain.auth.User;
-import uz.behzod.restaurantApp.dto.UserDto;
+import uz.behzod.restaurantApp.dto.UserDTO;
 import uz.behzod.restaurantApp.enums.Role;
 import uz.behzod.restaurantApp.repository.UserRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -93,7 +92,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void registerUser(UserDto userDto) {
+    public void registerUser(UserDTO userDto) {
         if (userRepository.existsByUsername(userDto.getUsername())) {
             throw new RuntimeException("Username is already taken.");
         }
