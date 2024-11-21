@@ -45,10 +45,9 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/user/register").permitAll()
-                                .requestMatchers("/api/company").permitAll()
-                                .requestMatchers("/api/company/{{id}}").permitAll()
-                                .requestMatchers("/api/company/{{id}}").permitAll()
+                                .requestMatchers("/api/company/**").permitAll()
+                                .requestMatchers("/api/branch/**").permitAll()
+                                .requestMatchers("/api/department/**").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )

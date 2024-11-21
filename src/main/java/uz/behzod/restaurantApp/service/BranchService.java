@@ -9,9 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import uz.behzod.restaurantApp.domain.address.Address;
 import uz.behzod.restaurantApp.domain.branch.Branch;
-import uz.behzod.restaurantApp.dto.address.AddressDTO;
+import uz.behzod.restaurantApp.dto.address.AddressDetailDTO;
+import uz.behzod.restaurantApp.dto.branch.BranchDetailDto;
 import uz.behzod.restaurantApp.dto.branch.BranchDto;
 import uz.behzod.restaurantApp.repository.BranchRepository;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -27,13 +30,13 @@ public class BranchService {
             throw new RuntimeException("Name field is required");
         }
         if (branchDto.getCompanyId() == null) {
-            throw new RuntimeException("Branch must be associated with a valid company");
+            throw new RuntimeException("Company is required");
         }
         if (branchDto.getAddress() == null) {
-            throw new RuntimeException("Branch address is required");
+            throw new RuntimeException("Address is required");
         }
-        if (branchDto.getId() != null && branchRepository.existsByCompanyId(branchDto.getCompanyId())) {
-            throw new RuntimeException("Branch already exists");
+        if (branchDto.getId() != null && branchRepository.existsByNameEqualsIgnoreCase(branchDto.getCompanyId(), branchDto.getName())) {
+            throw new RuntimeException("Branch exists by this name: " + branchDto.getName());
         }
     }
 
@@ -43,7 +46,6 @@ public class BranchService {
         this.validate(branchDto);
         Branch branch = new Branch();
         branch.setName(branchDto.getName());
-        branch.setId(branchDto.getId());
         branch.setCompanyId(branchDto.getCompanyId());
 
         if (branchDto.getAddress() != null) {
@@ -67,7 +69,7 @@ public class BranchService {
         branch.setCompanyId(branchDto.getCompanyId());
 
         if (branchDto.getAddress() != null) {
-            Address address = new Address();
+            Address address = Optional.ofNullable(branch.getAddress()).orElseGet(Address::new);
             address.setRegionId(branchDto.getAddress().getRegionId());
             address.setDistrictId(branchDto.getAddress().getDistrictId());
             address.setStreet(branchDto.getAddress().getStreet());
@@ -77,14 +79,33 @@ public class BranchService {
     }
 
     @Transactional
-    public void delete(Branch branch) {
-        if (!branchRepository.existsById(branch.getId())) {
+    public Long delete(Long id) {
+        if (!branchRepository.existsById(id)) {
             throw new RuntimeException("Branch not found");
         }
-        branchRepository.delete(branch);
+        branchRepository.deleteById(id);
+        return id;
     }
 
-    public BranchDto get(Long id) {}
+    @Transactional
+    public BranchDetailDto get(Long id) {
+        return branchRepository.findById(id).map(branch -> {
+            BranchDetailDto branchDetailDto = new BranchDetailDto();
+            branchDetailDto.setId(branch.getId());
+            branchDetailDto.setName(branch.getName());
+            branchDetailDto.setCompany(branch.getCompany().toCommonDTO());
+
+            if (branch.getAddress() != null) {
+                AddressDetailDTO addressDetailDTO = new AddressDetailDTO();
+                addressDetailDTO.setRegion(branch.getAddress().getRegion().toCommonDTO());
+                addressDetailDTO.setDistrict(branch.getAddress().getDistrict().toCommonDTO());
+                addressDetailDTO.setNeighbourhood(branch.getAddress().getNeighbourhood().toCommonDTO());
+                addressDetailDTO.setStreet(branch.getAddress().getStreet());
+                branchDetailDto.setAddress(addressDetailDTO);
+            }
+            return branchDetailDto;
+        }).orElseThrow(() -> new RuntimeException("Branch not found"));
+    }
 
 
 }
