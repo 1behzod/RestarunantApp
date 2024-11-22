@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Transactional(readOnly = true)
 public class BranchService {
 
     BranchRepository branchRepository;
@@ -70,7 +71,7 @@ public class BranchService {
 
     @Transactional
     public Long update(Long id, BranchDTO branchDto) {
-        Branch branch = branchRepository.findById(branchDto.getId()).orElseThrow(() -> new RuntimeException("Branch not found"));
+        Branch branch = branchRepository.findById(id).orElseThrow(() -> new RuntimeException("Branch not found"));
         branchDto.setId(id);
         this.validate(branchDto);
 
@@ -91,7 +92,7 @@ public class BranchService {
     @Transactional
     public void delete(Long id) {
         if (!branchRepository.existsById(id)) {
-            throw new RuntimeException("Branch not found");
+            throw new RuntimeException("Branch not found with id: " + id);
         }
         branchRepository.deleteById(id);
     }
@@ -125,6 +126,13 @@ public class BranchService {
                     branchListDTO.setId(branch.getId());
                     branchListDTO.setCompanyId(branch.getCompany().getId());
                     branchListDTO.setName(branch.getName());
+                    if (branch.getAddress() != null) {
+                        AddressDetailDTO addressDetailDTO = new AddressDetailDTO();
+                        addressDetailDTO.setRegion(branch.getAddress().getRegion().toCommonDTO());
+                        addressDetailDTO.setDistrict(branch.getAddress().getDistrict().toCommonDTO());
+                        addressDetailDTO.setNeighbourhood(branch.getAddress().getNeighbourhood().toCommonDTO());
+                        addressDetailDTO.setStreet(branch.getAddress().getStreet());
+                    }
                     return branchListDTO;
                 }).collect(Collectors.toList());
         return new PageImpl<>(result, filter.getOrderedPageable(), resultList.getCount());
