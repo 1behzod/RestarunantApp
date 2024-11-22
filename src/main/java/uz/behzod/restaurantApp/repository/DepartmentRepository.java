@@ -5,7 +5,7 @@ import uz.behzod.restaurantApp.repository.custom.DepartmentRepositoryCustom;
 
 
 public interface DepartmentRepository extends BaseRepository<Department, Long>, DepartmentRepositoryCustom {
-    boolean existsByNameEqualsIgnoreCase(Long branchId, String name);
 
+    boolean existsByNameIgnoreCaseAndBranchId(String name, Long branchId);
 
 }

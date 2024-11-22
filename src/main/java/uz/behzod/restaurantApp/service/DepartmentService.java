@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Transactional(readOnly = true)
 public class DepartmentService {
 
     DepartmentRepository departmentRepository;
@@ -36,7 +37,7 @@ public class DepartmentService {
         if (departmentDTO.getBranchId() == null) {
             throw new RuntimeException("Branch is required");
         }
-        if (departmentDTO.getId() != null && departmentRepository.existsByNameEqualsIgnoreCase(departmentDTO.getId(), departmentDTO.getName())) {
+        if (departmentDTO.getId() != null && departmentRepository.existsByNameIgnoreCaseAndBranchId( departmentDTO.getName(), departmentDTO.getId())) {
             throw new RuntimeException("Department exists with name " + departmentDTO.getName());
         }
     }

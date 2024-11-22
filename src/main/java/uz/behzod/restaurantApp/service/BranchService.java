@@ -16,11 +16,9 @@ import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.branch.BranchDetailDTO;
 import uz.behzod.restaurantApp.dto.branch.BranchDTO;
 import uz.behzod.restaurantApp.dto.branch.BranchListDTO;
-import uz.behzod.restaurantApp.dto.company.CompanyListDTO;
 import uz.behzod.restaurantApp.filters.BranchFilter;
 import uz.behzod.restaurantApp.repository.BranchRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,11 +43,10 @@ public class BranchService {
         if (branchDto.getAddress() == null) {
             throw new RuntimeException("Address is required");
         }
-        if (branchDto.getId() != null && branchRepository.existsByNameEqualsIgnoreCase(branchDto.getCompanyId(), branchDto.getName())) {
+        if (branchDto.getId() != null && branchRepository.existsByNameIgnoreCaseAndCompanyId(branchDto.getName(), branchDto.getCompanyId())) {
             throw new RuntimeException("Branch exists by this name: " + branchDto.getName());
         }
     }
-
 
     @Transactional
     public Long create(BranchDTO branchDto) {
@@ -63,7 +60,7 @@ public class BranchService {
             address.setRegionId(branchDto.getAddress().getRegionId());
             address.setDistrict(branchDto.getAddress().getDistrictId());
             address.setNeighbourhoodId(branchDto.getAddress().getNeighbourhoodId());
-            address.setStreet(branch.getAddress().getStreet());
+            address.setStreet(branchDto.getAddress().getStreet());
             branch.setAddress(address);
         }
         return branchRepository.save(branch).getId();
