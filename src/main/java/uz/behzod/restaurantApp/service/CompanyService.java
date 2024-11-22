@@ -17,7 +17,6 @@ import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.company.CompanyDTO;
 import uz.behzod.restaurantApp.dto.company.CompanyDetailDTO;
 import uz.behzod.restaurantApp.dto.company.CompanyListDTO;
-import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.filters.CompanyFilter;
 import uz.behzod.restaurantApp.repository.CompanyRepository;
 
@@ -81,27 +80,6 @@ public class CompanyService {
         return companyRepository.save(company).getId();
     }
 
-    public CompanyDetailDTO get(Long id) {
-        return companyRepository.findById(id).map(company -> {
-            CompanyDetailDTO companyDetailDTO = new CompanyDetailDTO();
-            companyDetailDTO.setId(company.getId());
-            companyDetailDTO.setTin(company.getTin());
-            companyDetailDTO.setName(company.getName());
-            companyDetailDTO.setBrand(company.getBrand());
-            companyDetailDTO.setPinfl(company.getPinfl());
-
-            if (company.getAddress() != null) {
-                AddressDetailDTO addressDetailDTO = new AddressDetailDTO();
-                addressDetailDTO.setRegion(company.getAddress().getRegion().toCommonDTO());
-                addressDetailDTO.setDistrict(company.getAddress().getDistrict().toCommonDTO());
-                addressDetailDTO.setNeighbourhood(company.getAddress().getNeighbourhood().toCommonDTO());
-                addressDetailDTO.setStreet(company.getAddress().getStreet());
-                companyDetailDTO.setAddress(addressDetailDTO);
-            }
-            return companyDetailDTO;
-        }).orElseThrow(() -> new RuntimeException("Company not found"));
-    }
-
 
     @Transactional
     public Long update(Long id, CompanyDTO companyDTO) {
@@ -131,6 +109,28 @@ public class CompanyService {
         }
         companyRepository.deleteById(id);
     }
+
+    public CompanyDetailDTO get(Long id) {
+        return companyRepository.findById(id).map(company -> {
+            CompanyDetailDTO companyDetailDTO = new CompanyDetailDTO();
+            companyDetailDTO.setId(company.getId());
+            companyDetailDTO.setTin(company.getTin());
+            companyDetailDTO.setName(company.getName());
+            companyDetailDTO.setBrand(company.getBrand());
+            companyDetailDTO.setPinfl(company.getPinfl());
+
+            if (company.getAddress() != null) {
+                AddressDetailDTO addressDetailDTO = new AddressDetailDTO();
+                addressDetailDTO.setRegion(company.getAddress().getRegion().toCommonDTO());
+                addressDetailDTO.setDistrict(company.getAddress().getDistrict().toCommonDTO());
+                addressDetailDTO.setNeighbourhood(company.getAddress().getNeighbourhood().toCommonDTO());
+                addressDetailDTO.setStreet(company.getAddress().getStreet());
+                companyDetailDTO.setAddress(addressDetailDTO);
+            }
+            return companyDetailDTO;
+        }).orElseThrow(() -> new RuntimeException("Company not found"));
+    }
+
 
     public Page<CompanyListDTO> getList(CompanyFilter filter) {
         ResultList<Company> resultList = companyRepository.getResultList(filter);

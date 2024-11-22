@@ -3,10 +3,13 @@ package uz.behzod.restaurantApp.controller;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.behzod.restaurantApp.dto.department.DepartmentDTO;
 import uz.behzod.restaurantApp.dto.department.DepartmentDetailDTO;
+import uz.behzod.restaurantApp.dto.department.DepartmentListDTO;
+import uz.behzod.restaurantApp.filters.DepartmentFilter;
 import uz.behzod.restaurantApp.service.DepartmentService;
 
 @RestController
@@ -34,7 +37,13 @@ public class DepartmentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Long> delete(@PathVariable Long id) {
-        return ResponseEntity.ok(departmentService.delete(id));
+        departmentService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<DepartmentListDTO>> getList(DepartmentFilter filter) {
+        return ResponseEntity.ok(departmentService.getList(filter));
     }
 
 

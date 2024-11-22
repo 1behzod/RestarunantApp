@@ -4,17 +4,26 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import uz.behzod.restaurantApp.domain.address.Address;
 import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.dto.address.AddressDetailDTO;
-import uz.behzod.restaurantApp.dto.branch.BranchDetailDto;
-import uz.behzod.restaurantApp.dto.branch.BranchDto;
+import uz.behzod.restaurantApp.dto.base.ResultList;
+import uz.behzod.restaurantApp.dto.branch.BranchDetailDTO;
+import uz.behzod.restaurantApp.dto.branch.BranchDTO;
+import uz.behzod.restaurantApp.dto.branch.BranchListDTO;
+import uz.behzod.restaurantApp.dto.company.CompanyListDTO;
+import uz.behzod.restaurantApp.filters.BranchFilter;
 import uz.behzod.restaurantApp.repository.BranchRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -24,7 +33,7 @@ public class BranchService {
 
     BranchRepository branchRepository;
 
-    public void validate(BranchDto branchDto) {
+    public void validate(BranchDTO branchDto) {
 
         if (!StringUtils.hasLength(branchDto.getName())) {
             throw new RuntimeException("Name field is required");
@@ -42,7 +51,7 @@ public class BranchService {
 
 
     @Transactional
-    public Long create(BranchDto branchDto) {
+    public Long create(BranchDTO branchDto) {
         this.validate(branchDto);
         Branch branch = new Branch();
         branch.setName(branchDto.getName());
@@ -60,7 +69,7 @@ public class BranchService {
     }
 
     @Transactional
-    public Long update(BranchDto branchDto, Long id) {
+    public Long update(Long id, BranchDTO branchDto) {
         Branch branch = branchRepository.findById(branchDto.getId()).orElseThrow(() -> new RuntimeException("Branch not found"));
         branchDto.setId(id);
         this.validate(branchDto);
@@ -72,6 +81,7 @@ public class BranchService {
             Address address = Optional.ofNullable(branch.getAddress()).orElseGet(Address::new);
             address.setRegionId(branchDto.getAddress().getRegionId());
             address.setDistrictId(branchDto.getAddress().getDistrictId());
+            address.setNeighbourhoodId(branchDto.getAddress().getNeighbourhoodId());
             address.setStreet(branchDto.getAddress().getStreet());
             branch.setAddress(address);
         }
@@ -79,18 +89,16 @@ public class BranchService {
     }
 
     @Transactional
-    public Long delete(Long id) {
+    public void delete(Long id) {
         if (!branchRepository.existsById(id)) {
             throw new RuntimeException("Branch not found");
         }
         branchRepository.deleteById(id);
-        return id;
     }
 
-    @Transactional
-    public BranchDetailDto get(Long id) {
+    public BranchDetailDTO get(Long id) {
         return branchRepository.findById(id).map(branch -> {
-            BranchDetailDto branchDetailDto = new BranchDetailDto();
+            BranchDetailDTO branchDetailDto = new BranchDetailDTO();
             branchDetailDto.setId(branch.getId());
             branchDetailDto.setName(branch.getName());
             branchDetailDto.setCompany(branch.getCompany().toCommonDTO());
@@ -105,6 +113,21 @@ public class BranchService {
             }
             return branchDetailDto;
         }).orElseThrow(() -> new RuntimeException("Branch not found"));
+    }
+
+    public Page<BranchListDTO> getList(BranchFilter filter) {
+        ResultList<Branch> resultList = branchRepository.getResultList(filter);
+        List<BranchListDTO> result = resultList
+                .getList()
+                .stream()
+                .map(branch -> {
+                    BranchListDTO branchListDTO = new BranchListDTO();
+                    branchListDTO.setId(branch.getId());
+                    branchListDTO.setCompanyId(branch.getCompany().getId());
+                    branchListDTO.setName(branch.getName());
+                    return branchListDTO;
+                }).collect(Collectors.toList());
+        return new PageImpl<>(result, filter.getOrderedPageable(), resultList.getCount());
     }
 
 

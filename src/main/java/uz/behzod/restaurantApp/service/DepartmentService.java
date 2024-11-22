@@ -4,13 +4,21 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import uz.behzod.restaurantApp.domain.Department;
+import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.department.DepartmentDTO;
 import uz.behzod.restaurantApp.dto.department.DepartmentDetailDTO;
+import uz.behzod.restaurantApp.dto.department.DepartmentListDTO;
+import uz.behzod.restaurantApp.filters.DepartmentFilter;
 import uz.behzod.restaurantApp.repository.DepartmentRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,13 +31,13 @@ public class DepartmentService {
 
     private void validate(DepartmentDTO departmentDTO) {
         if (!StringUtils.hasLength(departmentDTO.getName())) {
-            throw new RuntimeException("Department name cannot be empty");
+            throw new RuntimeException("Department name is required");
         }
         if (departmentDTO.getBranchId() == null) {
-            throw new RuntimeException("Department branchId cannot be null");
+            throw new RuntimeException("Branch is required");
         }
-        if (departmentRepository.existsByName(departmentDTO.getName())) {
-            throw new RuntimeException("Department name must be unique");
+        if (departmentDTO.getId() != null && departmentRepository.existsByNameEqualsIgnoreCase(departmentDTO.getId(), departmentDTO.getName())) {
+            throw new RuntimeException("Department exists with name " + departmentDTO.getName());
         }
     }
 
@@ -54,15 +62,13 @@ public class DepartmentService {
     }
 
     @Transactional
-    public Long delete(Long id) {
+    public void delete(Long id) {
         if (!departmentRepository.existsById(id)) {
             throw new RuntimeException("Department not found with id: " + id);
         }
         departmentRepository.deleteById(id);
-        return id;
     }
 
-    @Transactional
     public DepartmentDetailDTO get(Long id) {
         return departmentRepository.findById(id).map(department -> {
             DepartmentDetailDTO departmentDetailDto = new DepartmentDetailDTO();
@@ -72,6 +78,23 @@ public class DepartmentService {
 
             return departmentDetailDto;
         }).orElseThrow(() -> new RuntimeException("Department not found"));
+    }
+
+    public Page<DepartmentListDTO> getList(DepartmentFilter filter) {
+        ResultList<Department> resultList = departmentRepository.getResultList(filter);
+
+        List<DepartmentListDTO> result = resultList
+                .getList()
+                .stream()
+                .map(department -> {
+                    DepartmentListDTO departmentListDTO = new DepartmentListDTO();
+                    departmentListDTO.setId(department.getId());
+                    departmentListDTO.setName(department.getName());
+                    departmentListDTO.setBranchId(department.getBranchId());
+                    return departmentListDTO;
+                })
+                .collect(Collectors.toList());
+        return new PageImpl<>(result, filter.getOrderedPageable(), resultList.getCount());
     }
 }
 
