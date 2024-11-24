@@ -17,7 +17,7 @@ import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.company.CompanyDTO;
 import uz.behzod.restaurantApp.dto.company.CompanyDetailDTO;
 import uz.behzod.restaurantApp.dto.company.CompanyListDTO;
-import uz.behzod.restaurantApp.filters.CompanyFilter;
+import uz.behzod.restaurantApp.filters.company.CompanyFilter;
 import uz.behzod.restaurantApp.repository.CompanyRepository;
 
 import java.util.List;

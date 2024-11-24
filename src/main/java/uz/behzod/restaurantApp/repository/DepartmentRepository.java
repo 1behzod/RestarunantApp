@@ -8,4 +8,5 @@ public interface DepartmentRepository extends BaseRepository<Department, Long>, 
 
     boolean existsByNameIgnoreCaseAndBranchId(String name, Long branchId);
 
+    boolean existsByNameIgnoreCaseAndBranchIdAndIdNot(String name, Long branchId, Long id);
 }

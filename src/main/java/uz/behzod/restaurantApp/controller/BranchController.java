@@ -9,10 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import uz.behzod.restaurantApp.dto.branch.BranchDetailDTO;
 import uz.behzod.restaurantApp.dto.branch.BranchDTO;
 import uz.behzod.restaurantApp.dto.branch.BranchListDTO;
-import uz.behzod.restaurantApp.filters.BranchFilter;
+import uz.behzod.restaurantApp.filters.branch.BranchFilter;
 import uz.behzod.restaurantApp.service.BranchService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/branch")

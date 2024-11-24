@@ -1,17 +1,23 @@
 package uz.behzod.restaurantApp.service;
 
-import jakarta.servlet.http.PushBuilder;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import uz.behzod.restaurantApp.domain.menu.MenuItem;
+import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.menu.MenuItemDTO;
 import uz.behzod.restaurantApp.dto.menu.MenuItemDetailDTO;
+import uz.behzod.restaurantApp.dto.menu.MenuItemListDTO;
+import uz.behzod.restaurantApp.filters.menu.MenuItemFilter;
 import uz.behzod.restaurantApp.repository.MenuItemRepository;
-import uz.behzod.restaurantApp.repository.MenuRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,21 +28,21 @@ public class MenuItemService {
 
     private void validate(MenuItemDTO menuItemDTO) {
         if (!StringUtils.hasLength(menuItemDTO.getName())) {
-            throw new RuntimeException("Menu item name cannot be empty");
+            throw new RuntimeException("Item name is required");
         }
         if (menuItemDTO.getMenuId() == null) {
-            throw new RuntimeException("Menu item id cannot be empty");
+            throw new RuntimeException("Menu id is required");
         }
         if (menuItemDTO.getPrice() == null) {
-            throw new RuntimeException("Menu item price cannot be empty");
+            throw new RuntimeException("Item price is required");
         }
         if (menuItemDTO.getProductId() == null) {
-            throw new RuntimeException("Menu item product id cannot be empty");
+            throw new RuntimeException("Item product is required");
         }
         if (menuItemDTO.getUnitId() == null) {
-            throw new RuntimeException("Menu item unitId cannot be empty");
+            throw new RuntimeException("Item unit is required");
         }
-
+        //TODO validation for product and unit
 
     }
 
@@ -53,7 +59,7 @@ public class MenuItemService {
     }
 
     @Transactional
-    public Long update(MenuItemDTO menuItemDTO, Long id) {
+    public Long update(Long id, MenuItemDTO menuItemDTO) {
         MenuItem menuItem = menuItemRepository.findById(id).orElseThrow(() -> new RuntimeException("Menu item not found"));
         menuItemDTO.setId(id);
         this.validate(menuItemDTO);
@@ -67,12 +73,11 @@ public class MenuItemService {
     }
 
     @Transactional
-    public Long delete(Long id) {
+    public void delete(Long id) {
         if (!menuItemRepository.existsById(id)) {
             throw new RuntimeException("Menu item not found");
         }
         menuItemRepository.deleteById(id);
-        return id;
     }
 
     public MenuItemDetailDTO get(Long id) {
@@ -85,5 +90,20 @@ public class MenuItemService {
             return menuItemDetailDTO;
 
         }).orElseThrow(() -> new RuntimeException("Menu item not found"));
+    }
+
+    public Page<MenuItemListDTO> getList(MenuItemFilter filter) {
+        ResultList<MenuItem> resultList = menuItemRepository.getResultList(filter);
+        List<MenuItemListDTO> result = resultList
+                .getList()
+                .stream()
+                .map(menuItem -> {
+                    MenuItemListDTO menuItemListDTO = new MenuItemListDTO();
+                    menuItemListDTO.setId(menuItem.getId());
+                    menuItemListDTO.setName(menuItem.getName());
+                    menuItemListDTO.setMenuId(menuItem.getMenuId());
+                    return menuItemListDTO;
+                }).collect(Collectors.toList());
+        return new PageImpl<>(result, filter.getOrderedPageable(), resultList.getCount());
     }
 }

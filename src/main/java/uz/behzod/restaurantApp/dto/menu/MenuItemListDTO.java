@@ -12,6 +12,9 @@ import uz.behzod.restaurantApp.dto.base.CommonDTO;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MenuItemListDTO extends CommonDTO {
+
+    Long MenuId;
+
 }
 
 

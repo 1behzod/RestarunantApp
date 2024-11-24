@@ -48,6 +48,8 @@ public class SecurityConfiguration {
                                 .requestMatchers("/api/company/**").permitAll()
                                 .requestMatchers("/api/branch/**").permitAll()
                                 .requestMatchers("/api/department/**").permitAll()
+                                .requestMatchers("/api/menuItem/**").permitAll()
+                                .requestMatchers("/api/menu/**").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )

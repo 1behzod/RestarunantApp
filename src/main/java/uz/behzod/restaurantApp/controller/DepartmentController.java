@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.behzod.restaurantApp.dto.department.DepartmentDTO;
 import uz.behzod.restaurantApp.dto.department.DepartmentDetailDTO;
 import uz.behzod.restaurantApp.dto.department.DepartmentListDTO;
-import uz.behzod.restaurantApp.filters.DepartmentFilter;
+import uz.behzod.restaurantApp.filters.department.DepartmentFilter;
 import uz.behzod.restaurantApp.service.DepartmentService;
 
 @RestController
@@ -36,7 +36,7 @@ public class DepartmentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         departmentService.delete(id);
         return ResponseEntity.ok().build();
     }

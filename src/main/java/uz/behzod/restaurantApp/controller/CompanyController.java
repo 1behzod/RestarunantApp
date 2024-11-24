@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.behzod.restaurantApp.dto.company.CompanyDTO;
 import uz.behzod.restaurantApp.dto.company.CompanyDetailDTO;
 import uz.behzod.restaurantApp.dto.company.CompanyListDTO;
-import uz.behzod.restaurantApp.filters.BaseFilter;
-import uz.behzod.restaurantApp.filters.CompanyFilter;
+import uz.behzod.restaurantApp.filters.company.CompanyFilter;
 import uz.behzod.restaurantApp.service.CompanyService;
 
 

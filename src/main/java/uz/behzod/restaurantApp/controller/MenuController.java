@@ -3,10 +3,13 @@ package uz.behzod.restaurantApp.controller;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.behzod.restaurantApp.dto.menu.MenuDTO;
 import uz.behzod.restaurantApp.dto.menu.MenuDetailDTO;
+import uz.behzod.restaurantApp.dto.menu.MenuListDTO;
+import uz.behzod.restaurantApp.filters.menu.MenuFilter;
 import uz.behzod.restaurantApp.service.MenuService;
 
 @RestController
@@ -28,13 +31,19 @@ public class MenuController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Long> delete(@PathVariable Long id) {
-        return ResponseEntity.ok(menuService.delete(id));
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        menuService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MenuDetailDTO> get(@PathVariable Long id) {
         return ResponseEntity.ok(menuService.get(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<MenuListDTO>> getList(MenuFilter filter) {
+        return ResponseEntity.ok(menuService.getList(filter));
     }
 
 

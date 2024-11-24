@@ -1,15 +1,17 @@
-package uz.behzod.restaurantApp.filters;
-
+package uz.behzod.restaurantApp.filters.department;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BranchFilter extends BaseFilter {
+public class DepartmentFilter extends BaseFilter {
 
-    Long companyId;
+    Long branchId;
+
 }
+

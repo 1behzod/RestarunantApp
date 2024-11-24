@@ -16,7 +16,7 @@ import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.branch.BranchDetailDTO;
 import uz.behzod.restaurantApp.dto.branch.BranchDTO;
 import uz.behzod.restaurantApp.dto.branch.BranchListDTO;
-import uz.behzod.restaurantApp.filters.BranchFilter;
+import uz.behzod.restaurantApp.filters.branch.BranchFilter;
 import uz.behzod.restaurantApp.repository.BranchRepository;
 
 import java.util.List;
@@ -43,14 +43,25 @@ public class BranchService {
         if (branchDto.getAddress() == null) {
             throw new RuntimeException("Address is required");
         }
-        if (branchDto.getId() != null && branchRepository.existsByNameIgnoreCaseAndCompanyId(branchDto.getName(), branchDto.getCompanyId())) {
+        /*if (branchDto.getId() != null && branchRepository.existsByNameIgnoreCaseAndCompanyId(branchDto.getName(), branchDto.getCompanyId())) {
             throw new RuntimeException("Branch exists by this name: " + branchDto.getName());
+        }*/
+
+        if (branchDto.getId() == null) {
+            if (branchRepository.existsByNameIgnoreCaseAndCompanyId(branchDto.getName(), branchDto.getCompanyId())) {
+                throw new RuntimeException("Branch already exists by this name: " + branchDto.getName());
+            }
+        } else {
+            if (branchRepository.existsByNameIgnoreCaseAndCompanyIdAndIdNot(branchDto.getName(), branchDto.getCompanyId(), branchDto.getId())) {
+                throw new RuntimeException("Branch already exists by this name: " + branchDto.getName());
+            }
         }
     }
 
     @Transactional
     public Long create(BranchDTO branchDto) {
         this.validate(branchDto);
+
         Branch branch = new Branch();
         branch.setName(branchDto.getName());
         branch.setCompanyId(branchDto.getCompanyId());
@@ -68,10 +79,10 @@ public class BranchService {
 
     @Transactional
     public Long update(Long id, BranchDTO branchDto) {
-        Branch branch = branchRepository.findById(id).orElseThrow(() -> new RuntimeException("Branch not found"));
+        Branch branch = branchRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Branch not found"));
         branchDto.setId(id);
         this.validate(branchDto);
-
         branch.setName(branchDto.getName());
         branch.setCompanyId(branchDto.getCompanyId());
 

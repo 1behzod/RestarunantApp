@@ -5,7 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.dto.base.ResultList;
-import uz.behzod.restaurantApp.filters.BranchFilter;
+import uz.behzod.restaurantApp.filters.branch.BranchFilter;
 import uz.behzod.restaurantApp.repository.custom.BranchRepositoryCustom;
 
 

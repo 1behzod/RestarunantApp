@@ -14,15 +14,15 @@ import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.department.DepartmentDTO;
 import uz.behzod.restaurantApp.dto.department.DepartmentDetailDTO;
 import uz.behzod.restaurantApp.dto.department.DepartmentListDTO;
-import uz.behzod.restaurantApp.filters.DepartmentFilter;
+import uz.behzod.restaurantApp.filters.department.DepartmentFilter;
 import uz.behzod.restaurantApp.repository.DepartmentRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional(readOnly = true)
 public class DepartmentService {
@@ -37,8 +37,19 @@ public class DepartmentService {
         if (departmentDTO.getBranchId() == null) {
             throw new RuntimeException("Branch is required");
         }
-        if (departmentDTO.getId() != null && departmentRepository.existsByNameIgnoreCaseAndBranchId( departmentDTO.getName(), departmentDTO.getId())) {
-            throw new RuntimeException("Department exists with name " + departmentDTO.getName());
+            /*if (departmentDTO.getId() != null && departmentRepository.existsByNameIgnoreCaseAndBranchId( departmentDTO.getName(), departmentDTO.getId())) {
+                throw new RuntimeException("Department exists with name " + departmentDTO.getName());
+            }*/
+
+        if (departmentDTO.getId() == null) {
+            if (departmentRepository.existsByNameIgnoreCaseAndBranchId(departmentDTO.getName(), departmentDTO.getBranchId())) {
+                throw new RuntimeException("Department already exists with name " + departmentDTO.getName());
+            }
+        } else {
+            if (departmentRepository.existsByNameIgnoreCaseAndBranchIdAndIdNot(
+                    departmentDTO.getName(), departmentDTO.getBranchId(), departmentDTO.getId())) {
+                throw new RuntimeException("Department already exists with name " + departmentDTO.getName());
+            }
         }
     }
 

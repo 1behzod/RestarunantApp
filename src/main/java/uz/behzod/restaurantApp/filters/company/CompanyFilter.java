@@ -1,9 +1,10 @@
-package uz.behzod.restaurantApp.filters;
+package uz.behzod.restaurantApp.filters.company;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 
 @Getter
 @Setter

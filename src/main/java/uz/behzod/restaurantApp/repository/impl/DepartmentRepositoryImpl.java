@@ -5,7 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import uz.behzod.restaurantApp.domain.Department;
 import uz.behzod.restaurantApp.dto.base.ResultList;
-import uz.behzod.restaurantApp.filters.DepartmentFilter;
+import uz.behzod.restaurantApp.filters.department.DepartmentFilter;
 import uz.behzod.restaurantApp.repository.custom.DepartmentRepositoryCustom;
 
 public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
@@ -31,7 +31,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
         }
 
         String countSql = sql.toString().replaceFirst("select d", "select count(d.id) ");
-        sql.append("order by d ").append(filter.getOrderBy());
+        sql.append("order by d. ").append(filter.getOrderBy());
         sql.append(" ").append(filter.getSortOrder());
 
         TypedQuery<Department> query = entityManager

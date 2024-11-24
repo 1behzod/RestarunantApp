@@ -1,10 +1,8 @@
 package uz.behzod.restaurantApp.repository;
 
-import jakarta.validation.constraints.NotNull;
 import uz.behzod.restaurantApp.domain.menu.MenuItem;
+import uz.behzod.restaurantApp.repository.custom.MenuItemRepositoryCustom;
 
-public interface MenuItemRepository extends BaseRepository<MenuItem, Long> {
+public interface MenuItemRepository extends BaseRepository<MenuItem, Long>, MenuItemRepositoryCustom {
 
-
-    boolean existsByName(@NotNull String name);
 }

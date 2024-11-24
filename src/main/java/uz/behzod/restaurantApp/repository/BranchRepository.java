@@ -8,6 +8,6 @@ public interface BranchRepository extends BaseRepository<Branch, Long>, BranchRe
 
     boolean existsByNameIgnoreCaseAndCompanyId(String name, Long companyId);
 
-
+    boolean existsByNameIgnoreCaseAndCompanyIdAndIdNot(String name, Long companyId, Long id);
 
 }
