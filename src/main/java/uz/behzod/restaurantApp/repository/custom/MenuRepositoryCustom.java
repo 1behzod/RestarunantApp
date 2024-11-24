@@ -8,5 +8,5 @@ import uz.behzod.restaurantApp.filters.menu.MenuFilter;
 @Repository
 public interface MenuRepositoryCustom {
 
-    ResultList<Menu> getResultList(MenuFilter filter)
+    ResultList<Menu> getResultList(MenuFilter filter);
 }
