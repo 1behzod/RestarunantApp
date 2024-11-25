@@ -26,8 +26,8 @@ public class MenuController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Long> update(@RequestBody MenuDTO menuDTO) {
-        return ResponseEntity.ok(menuService.update(menuDTO));
+    public ResponseEntity<Long> update(@PathVariable Long id, @RequestBody MenuDTO menuDTO) {
+        return ResponseEntity.ok(menuService.update(id, menuDTO));
     }
 
     @DeleteMapping("/{id}")

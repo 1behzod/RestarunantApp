@@ -17,16 +17,15 @@ public class MenuItemRepositoryImpl implements MenuItemRepositoryCustom {
     public ResultList<MenuItem> getResultList(MenuItemFilter filter) {
         ResultList<MenuItem> resultList = new ResultList<>();
         StringBuilder sql = new StringBuilder();
-        sql.append("select m from MenuItem ");
+        sql.append("select m from MenuItem m ");
         sql.append("where m.deleted = false ");
 
         if (filter.getMenuId() != null) {
             sql.append("and m.menuId = :menuId ");
         }
+
         if (filter.isSearchNotEmpty()) {
-            sql.append("and (");
-            sql.append(" lower m.name)").append(filter.getLikeSearch());
-            sql.append(")");
+            sql.append("and lower(m.name) ").append(filter.getLikeSearch());
         }
 
         String countSql = sql.toString().replaceFirst("select m ", "select count(m.id) ");

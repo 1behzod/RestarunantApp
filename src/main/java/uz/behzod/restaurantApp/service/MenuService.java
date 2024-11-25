@@ -47,6 +47,7 @@ public class MenuService {
                 throw new RuntimeException("Menu name already exists");
             }
         }
+        //TODO current branch bilan tekshirish kere, har hil branchda bir hil menu yaratib bolmadi
     }
 
     @Transactional
@@ -59,9 +60,9 @@ public class MenuService {
     }
 
     @Transactional
-    public Long update(MenuDTO menuDTO) {
-        Menu menu = menuRepository.findById(menuDTO.getId()).orElseThrow(() -> new RuntimeException("Menu not found"));
-        menu.setId(menuDTO.getId());
+    public Long update(Long id, MenuDTO menuDTO) {
+        Menu menu = menuRepository.findById(id).orElseThrow(() -> new RuntimeException("Menu not found"));
+        menu.setId(id);
         this.validate(menuDTO);
 
         menu.setName(menuDTO.getName());
@@ -81,13 +82,14 @@ public class MenuService {
 
     public MenuDetailDTO get(Long id) {
         return menuRepository.findById(id).map(menu -> {
-
             MenuDetailDTO menuDetailDTO = new MenuDetailDTO();
+            menuDetailDTO.setId(menu.getId());
             menuDetailDTO.setName(menu.getName());
             menuDetailDTO.setBranchId(menu.getBranchId());
             return menuDetailDTO;
         }).orElseThrow(() -> new RuntimeException("Menu not found"));
     }
+
 
     public Page<MenuListDTO> getList(MenuFilter filter) {
         ResultList<Menu> resultList = menuRepository.getResultList(filter);

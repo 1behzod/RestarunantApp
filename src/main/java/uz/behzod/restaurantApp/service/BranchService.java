@@ -40,9 +40,9 @@ public class BranchService {
         if (branchDto.getCompanyId() == null) {
             throw new RuntimeException("Company is required");
         }
-        if (branchDto.getAddress() == null) {
+       /* if (branchDto.getAddress() == null) {
             throw new RuntimeException("Address is required");
-        }
+        }*/
         /*if (branchDto.getId() != null && branchRepository.existsByNameIgnoreCaseAndCompanyId(branchDto.getName(), branchDto.getCompanyId())) {
             throw new RuntimeException("Branch exists by this name: " + branchDto.getName());
         }*/

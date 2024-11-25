@@ -8,5 +8,4 @@ import org.springframework.stereotype.Service;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-public class DistrictService {
-}
+public class DistrictService {}
