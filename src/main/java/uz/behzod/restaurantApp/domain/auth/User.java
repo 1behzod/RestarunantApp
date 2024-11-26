@@ -16,6 +16,7 @@ import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.domain.company.Company;
 import uz.behzod.restaurantApp.domain.Position;
 import uz.behzod.restaurantApp.enums.Role;
+import uz.behzod.restaurantApp.enums.UserStatus;
 
 @Entity
 @Getter
@@ -41,6 +42,10 @@ public class User extends SimpleEntity {
     @Column(name = "username", nullable = false)
     String username;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    UserStatus status = UserStatus.PENDING;
+
     @NotNull
     @Column(name = "password_hash", nullable = false)
     String password;
@@ -60,7 +65,7 @@ public class User extends SimpleEntity {
     Long branchId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "brach_id", insertable = false, updatable = false)
+    @JoinColumn(name = "branch_id", insertable = false, updatable = false)
     Branch branch;
 
     @Column(name = "company_id", nullable = false)
@@ -76,6 +81,7 @@ public class User extends SimpleEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "department_id", insertable = false, updatable = false)
     Department department;
+
 
 }
 

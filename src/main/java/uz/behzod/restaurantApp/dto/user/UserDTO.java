@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import uz.behzod.restaurantApp.dto.base.CommonDTO;
+import uz.behzod.restaurantApp.enums.UserStatus;
 
 @Getter
 @Setter
@@ -29,5 +30,7 @@ public class UserDTO extends CommonDTO {
     Long companyId;
 
     String role;
+
+    Long positionId;
 }
 
