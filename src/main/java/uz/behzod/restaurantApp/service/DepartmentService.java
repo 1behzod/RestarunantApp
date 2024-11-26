@@ -86,7 +86,7 @@ public class DepartmentService {
             DepartmentDetailDTO departmentDetailDto = new DepartmentDetailDTO();
             departmentDetailDto.setId(department.getId());
             departmentDetailDto.setName(department.getName());
-            departmentDetailDto.setBranchId(department.getBranchId());
+            departmentDetailDto.setBranch(department.getBranch().toCommonDTO());
 
             return departmentDetailDto;
         }).orElseThrow(() -> new RuntimeException("Department not found"));
@@ -102,7 +102,7 @@ public class DepartmentService {
                     DepartmentListDTO departmentListDTO = new DepartmentListDTO();
                     departmentListDTO.setId(department.getId());
                     departmentListDTO.setName(department.getName());
-                    departmentListDTO.setBranchId(department.getBranchId());
+                    departmentListDTO.setBranch(department.getBranch().toCommonDTO());
                     return departmentListDTO;
                 })
                 .collect(Collectors.toList());

@@ -5,7 +5,7 @@ import uz.behzod.restaurantApp.repository.custom.MenuRepositoryCustom;
 
 public interface MenuRepository extends BaseRepository<Menu, Long>, MenuRepositoryCustom {
 
-    boolean existsByName(String name);
-
+    boolean existsByNameAndBranchIdAndDeletedIsFalse(String name, Long branchId);
+    boolean existsByNameAndBranchIdAndDeletedIsFalseAndIdNot(String name, Long branchId, Long id);
 
 }

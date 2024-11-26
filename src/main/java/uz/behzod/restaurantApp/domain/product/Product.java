@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.SQLDelete;
 import uz.behzod.restaurantApp.domain.Department;
 import uz.behzod.restaurantApp.domain.SimpleEntity;
 import uz.behzod.restaurantApp.domain.unit.Unit;
@@ -15,6 +16,7 @@ import uz.behzod.restaurantApp.domain.unit.Unit;
 @Setter
 @Table(name = "product")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SQLDelete(sql = "UPDATE product SET deleted = 'true' WHERE id=?")
 public class Product extends SimpleEntity {
 
     @NotNull
@@ -26,7 +28,6 @@ public class Product extends SimpleEntity {
 
     @Column(name = "barcode")
     String barcode;
-
 
     @Column(name = "unit_id")
     Long unitId;

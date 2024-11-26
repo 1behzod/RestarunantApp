@@ -14,5 +14,5 @@ import uz.behzod.restaurantApp.dto.base.CommonDTO;
 
 public class MenuDetailDTO extends CommonDTO {
 
-    Long branchId;
+    CommonDTO branch;
 }

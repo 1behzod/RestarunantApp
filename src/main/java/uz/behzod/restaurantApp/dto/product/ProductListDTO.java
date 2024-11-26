@@ -15,7 +15,7 @@ public class ProductListDTO extends CommonDTO {
 
     String barcode;
 
-    Long departmentId;
+    CommonDTO department;
 
 
 }

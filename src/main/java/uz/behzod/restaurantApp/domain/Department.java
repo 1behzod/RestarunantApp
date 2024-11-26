@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.SQLDelete;
 import uz.behzod.restaurantApp.domain.branch.Branch;
 
 @Entity
@@ -11,6 +12,7 @@ import uz.behzod.restaurantApp.domain.branch.Branch;
 @Setter
 @Table(name = "department")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SQLDelete(sql = "UPDATE department SET deleted = 'true' WHERE id=?")
 public class Department extends SimpleEntity {
 
     @NotNull

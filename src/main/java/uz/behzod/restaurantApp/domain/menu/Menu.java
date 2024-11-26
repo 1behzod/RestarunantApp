@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.SQLDelete;
 import uz.behzod.restaurantApp.domain.SimpleEntity;
 import uz.behzod.restaurantApp.domain.branch.Branch;
 
@@ -15,6 +16,7 @@ import uz.behzod.restaurantApp.domain.branch.Branch;
 @Setter
 @Table(name = "menu")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SQLDelete(sql = "UPDATE menu SET deleted = 'true' WHERE id=?")
 public class Menu extends SimpleEntity {
 
     @NotNull

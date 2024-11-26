@@ -22,7 +22,4 @@ public class MenuItemDTO extends CommonDTO {
     Long menuId;
 
     Long unitId;
-
-
-
 }

@@ -17,7 +17,7 @@ public class ProductDetailDTO extends CommonDTO {
 
     Long unitId;
 
-    Long departmentId;
+    CommonDTO department;
 
     String description;
 }

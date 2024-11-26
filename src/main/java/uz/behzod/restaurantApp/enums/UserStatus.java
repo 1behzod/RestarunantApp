@@ -1,16 +1,11 @@
 package uz.behzod.restaurantApp.enums;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @Getter
 public enum UserStatus {
-    ACTIVE, PENDING, IN_ACTIVE;
+    PENDING, ACTIVE, IN_ACTIVE;
 
-    private final String name;
-    private final String code;
-
-    UserStatus() {
-        this.name = getName();
-        this.code = name();
-    }
 }

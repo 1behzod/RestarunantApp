@@ -1,20 +1,23 @@
 package uz.behzod.restaurantApp.dto.address;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AddressDTO {
 
-    private Long regionId;
+    Long regionId;
 
-    private Long districtId;
+    Long districtId;
 
-    private Long neighbourhoodId;
+    Long neighbourhoodId;
 
-    private String street;
+    String street;
 
 }

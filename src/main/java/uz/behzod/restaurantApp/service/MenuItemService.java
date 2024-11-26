@@ -85,8 +85,8 @@ public class MenuItemService {
             MenuItemDetailDTO menuItemDetailDTO = new MenuItemDetailDTO();
             menuItemDetailDTO.setName(menuItem.getName());
             menuItemDetailDTO.setPrice(menuItem.getPrice());
-            menuItemDetailDTO.setProductId(menuItem.getProductId());
-            menuItemDetailDTO.setUnitId(menuItem.getUnitId());
+            menuItemDetailDTO.setProduct(menuItem.getProduct().toCommonDTO());
+          //  menuItemDetailDTO.setUnit(menuItem.getUnit().toCommonDTO());
             return menuItemDetailDTO;
 
         }).orElseThrow(() -> new RuntimeException("Menu item not found"));
@@ -101,7 +101,7 @@ public class MenuItemService {
                     MenuItemListDTO menuItemListDTO = new MenuItemListDTO();
                     menuItemListDTO.setId(menuItem.getId());
                     menuItemListDTO.setName(menuItem.getName());
-                    menuItemListDTO.setMenuId(menuItem.getMenuId());
+                    menuItemListDTO.setMenu(menuItem.getMenu().toCommonDTO());
                     return menuItemListDTO;
                 }).collect(Collectors.toList());
         return new PageImpl<>(result, filter.getOrderedPageable(), resultList.getCount());

@@ -32,7 +32,7 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
 
         String countSql = sql.toString().replaceFirst("select m", "select count(m.id)");
 
-        sql.append(" order by m. ").append(filter.getOrderBy());
+        sql.append(" order by m.").append(filter.getOrderBy());
         sql.append(" ").append(filter.getSortOrder());
 
         TypedQuery<Menu> query = entityManager

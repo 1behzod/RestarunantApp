@@ -6,14 +6,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import uz.behzod.restaurantApp.dto.base.CommonDTO;
-import uz.behzod.restaurantApp.enums.UserStatus;
+import uz.behzod.restaurantApp.enums.Role;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserDTO extends CommonDTO {
-
 
     String firstName;
 
@@ -25,12 +24,14 @@ public class UserDTO extends CommonDTO {
 
     String password;
 
+    Role role;
+
     Long branchId;
 
-    Long companyId;
-
-    String role;
-
     Long positionId;
+
+    Long departmentId;
+
+    Long companyId;
 }
 

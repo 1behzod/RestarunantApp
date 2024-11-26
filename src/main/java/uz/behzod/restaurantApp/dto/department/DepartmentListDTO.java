@@ -13,6 +13,6 @@ import uz.behzod.restaurantApp.dto.base.CommonDTO;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DepartmentListDTO extends CommonDTO {
 
-    Long branchId;
+    CommonDTO branch;
 
 }

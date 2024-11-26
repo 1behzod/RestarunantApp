@@ -38,12 +38,12 @@ public class MenuService {
             throw new RuntimeException("Menu branch id cannot be empty");
         }
         if (menuDTO.getId() == null) {
-            if (menuRepository.existsByName(menuDTO.getName())) {
+            if (menuRepository.existsByNameAndBranchIdAndDeletedIsFalse(menuDTO.getName(), menuDTO.getBranchId())) {
                 throw new RuntimeException("Menu name already exists");
             }
         }
         if (menuDTO.getId() != null) {
-            if (menuRepository.existsByName(menuDTO.getName())) {
+            if (menuRepository.existsByNameAndBranchIdAndDeletedIsFalseAndIdNot(menuDTO.getName(), menuDTO.getBranchId(), menuDTO.getId())) {
                 throw new RuntimeException("Menu name already exists");
             }
         }
@@ -85,7 +85,7 @@ public class MenuService {
             MenuDetailDTO menuDetailDTO = new MenuDetailDTO();
             menuDetailDTO.setId(menu.getId());
             menuDetailDTO.setName(menu.getName());
-            menuDetailDTO.setBranchId(menu.getBranchId());
+            menuDetailDTO.setBranch(menu.getBranch().toCommonDTO());
             return menuDetailDTO;
         }).orElseThrow(() -> new RuntimeException("Menu not found"));
     }
@@ -100,7 +100,7 @@ public class MenuService {
                     MenuListDTO menuListDTO = new MenuListDTO();
                     menuListDTO.setId(menu.getId());
                     menuListDTO.setName(menu.getName());
-                    menuListDTO.setBranchId(menu.getBranchId());
+                    menuListDTO.setBranch(menu.getBranch().toCommonDTO());
                     return menuListDTO;
                 }).collect(Collectors.toList());
         return new PageImpl<>(result, filter.getOrderedPageable(), resultList.getCount());

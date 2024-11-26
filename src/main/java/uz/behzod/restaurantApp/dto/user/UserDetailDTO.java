@@ -1,14 +1,19 @@
-package uz.behzod.restaurantApp.dto.user.admin;
+package uz.behzod.restaurantApp.dto.user;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import uz.behzod.restaurantApp.dto.base.CommonDTO;
 import uz.behzod.restaurantApp.enums.Role;
 import uz.behzod.restaurantApp.enums.UserStatus;
 
 @Getter
 @Setter
-public class UserListAdminDTO extends CommonDTO {
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class UserDetailDTO extends CommonDTO {
 
     String firstName;
 
@@ -18,11 +23,19 @@ public class UserListAdminDTO extends CommonDTO {
 
     String username;
 
+    String password;
+
     Role role;
 
     UserStatus status;
 
     CommonDTO branch;
 
+    CommonDTO department;
+
+    CommonDTO position;
+
     CommonDTO company;
+
+
 }

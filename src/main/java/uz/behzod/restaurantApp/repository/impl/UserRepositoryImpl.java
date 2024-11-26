@@ -3,6 +3,7 @@ package uz.behzod.restaurantApp.repository.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import org.springframework.util.CollectionUtils;
 import uz.behzod.restaurantApp.domain.auth.User;
 import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.filters.user.UserFilter;
@@ -21,13 +22,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         sql.append(" where u.deleted = false ");
 
         if (filter.getCompanyId() != null) {
-            sql.append(" and u.company.id = :companyId ");
+            sql.append(" and u.companyId = :companyId ");
         }
         if (filter.getBranchId() != null) {
-            sql.append(" and u.branch.id = :branchId ");
+            sql.append(" and u.branchId = :branchId ");
         }
         if (filter.getDepartmentId() != null) {
-            sql.append(" and u.department.id = :departmentId ");
+            sql.append(" and u.departmentId = :departmentId ");
         }
         if (filter.getRole() != null) {
             sql.append(" and u.role = :role ");
@@ -35,17 +36,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         if (filter.getStatus() != null) {
             sql.append(" and u.status = :status ");
         }
-        if (filter.getStatuses() != null && !filter.getStatuses().isEmpty()) {
-            sql.append(" and u.status in :statuses ");
-        }
-        if (filter.getRoles() != null && !filter.getRoles().isEmpty()) {
-            sql.append(" and u.role in :roles ");
+        if (!CollectionUtils.isEmpty(filter.getRoles())) {
+            sql.append(" and u.role in (:roles) ");
         }
         if (filter.isSearchNotEmpty()) {
             sql.append(" and (");
             sql.append(" lower(u.name)").append(filter.getLikeSearch());
             sql.append(" or lower(u.username)").append(filter.getLikeSearch());
-            sql.append(" or lower(u.email)").append(filter.getLikeSearch());
             sql.append(" )");
         }
 
@@ -80,10 +77,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         if (filter.getStatus() != null) {
             query.setParameter("status", filter.getStatus());
             countQuery.setParameter("status", filter.getStatus());
-        }
-        if (filter.getStatuses() != null && !filter.getStatuses().isEmpty()) {
-            query.setParameter("statuses", filter.getStatuses());
-            countQuery.setParameter("statuses", filter.getStatuses());
         }
         if (filter.getRoles() != null && !filter.getRoles().isEmpty()) {
             query.setParameter("roles", filter.getRoles());

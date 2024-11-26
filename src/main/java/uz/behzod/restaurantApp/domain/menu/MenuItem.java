@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.SQLDelete;
 import uz.behzod.restaurantApp.domain.SimpleEntity;
 import uz.behzod.restaurantApp.domain.product.Product;
 import uz.behzod.restaurantApp.domain.unit.Unit;
@@ -18,6 +19,7 @@ import java.math.BigDecimal;
 @Setter
 @Table(name = "menu_item")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@SQLDelete(sql = "UPDATE menu_item SET deleted = 'true' WHERE id=?")
 public class MenuItem extends SimpleEntity {
 
     @NotNull

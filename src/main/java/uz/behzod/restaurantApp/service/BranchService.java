@@ -132,7 +132,7 @@ public class BranchService {
                 .map(branch -> {
                     BranchListDTO branchListDTO = new BranchListDTO();
                     branchListDTO.setId(branch.getId());
-                    branchListDTO.setCompanyId(branch.getCompany().getId());
+                    branchListDTO.setCompany(branch.getCompany().toCommonDTO());
                     branchListDTO.setName(branch.getName());
                     if (branch.getAddress() != null) {
                         AddressDetailDTO addressDetailDTO = new AddressDetailDTO();

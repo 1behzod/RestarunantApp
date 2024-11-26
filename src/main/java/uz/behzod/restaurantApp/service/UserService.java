@@ -11,20 +11,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import uz.behzod.restaurantApp.domain.auth.User;
-import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.user.UserDTO;
-import uz.behzod.restaurantApp.dto.user.admin.UserDetailAdminDTO;
-import uz.behzod.restaurantApp.dto.user.admin.UserListAdminDTO;
-import uz.behzod.restaurantApp.dto.user.cabinet.UserDetailCabinetDTO;
-import uz.behzod.restaurantApp.dto.user.cabinet.UserListCabinetDTO;
-import uz.behzod.restaurantApp.enums.Role;
+import uz.behzod.restaurantApp.dto.user.UserDetailDTO;
+import uz.behzod.restaurantApp.dto.user.UserListDTO;
+import uz.behzod.restaurantApp.enums.UserStatus;
 import uz.behzod.restaurantApp.filters.user.UserFilter;
-import uz.behzod.restaurantApp.repository.BranchRepository;
 import uz.behzod.restaurantApp.repository.UserRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -35,115 +30,113 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class UserService {
     UserRepository userRepository;
-    BranchRepository branchRepository;
     PasswordEncoder passwordEncoder;
+
+    private void validate(UserDTO userDTO) {
+        if (!StringUtils.hasLength(userDTO.getFirstName())) {
+            throw new RuntimeException("Name is required");
+        }
+        if (!StringUtils.hasLength(userDTO.getUsername())) {
+            throw new RuntimeException("Username is required");
+        }
+        if (!StringUtils.hasLength(userDTO.getPassword())) {
+            throw new RuntimeException("Password is required");
+        }
+        if (userDTO.getBranchId() == null) {
+            throw new RuntimeException("BranchId is required");
+        }
+        if (userDTO.getRole() == null) {
+            throw new RuntimeException("Role is required");
+        }
+        if (userDTO.getDepartmentId() == null) {
+            throw new RuntimeException("DepartmentId is required");
+        }
+        if (userDTO.getPositionId() == null) {
+            throw new RuntimeException("PositionId is required");
+        }
+        if (userDTO.getCompanyId() == null) {
+            throw new RuntimeException("CompanyId is required");
+        }
+       /* if (userDTO.getId() == null) {
+            if (userRepository.findByUsernameAndDeletedIsFalse((userDTO.getUsername()))) {
+                throw new RuntimeException("Username already exists");
+            }
+        }
+        if (userDTO.getId() != null) {
+            if (userRepository.findByUsernameAndDeletedIsFalseAndIdNot(userDTO.getUsername(), userDTO.getId())) {
+                throw new RuntimeException("Username already exists");
+            }
+        }*/
+
+    }
 
     @Transactional
     public Long create(UserDTO userDTO) {
-        User user = null;
-        if (StringUtils.hasLength(userDTO.getUsername())) {
-            user = userRepository.findFirstByUsernameAndDeletedIsFalse(userDTO.getUsername()).orElse(null);
-        }
-        if (user == null) {
-            user = new User();
-        }
+        this.validate(userDTO);
+        User user = new User();
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setPatronymic(userDTO.getPatronymic());
-        user.setPositionId(userDTO.getPositionId());
-        if (!StringUtils.hasLength(userDTO.getUsername())) {
-            throw new IllegalArgumentException("Username is required");
-        }
         user.setUsername(userDTO.getUsername());
-        String password = null;
-        if (userDTO.getId() == null) {
-            password = Optional.ofNullable(userDTO.getPassword()).orElse("");
-            user.setPassword(passwordEncoder.encode(password));
-        }
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setBranchId(userDTO.getBranchId());
-//        if (userDTO.getBranchId() != null) {
-//            Branch branch = branchRepository.findById(userDTO.getBranchId())
-//                    .orElseThrow(() -> new IllegalArgumentException("Branch with ID " + userDTO.getBranchId() + " not found"));
-//        }
-        user.setRole(Role.valueOf(userDTO.getRole()));
-        user.setBranchId(userDTO.getBranchId());
+        user.setRole(userDTO.getRole());
+        user.setDepartmentId(userDTO.getDepartmentId());
+        user.setPositionId(userDTO.getPositionId());
         user.setCompanyId(userDTO.getCompanyId());
         return userRepository.save(user).getId();
     }
 
     @Transactional
     public Long update(Long id, UserDTO userDTO) {
+        userDTO.setId(id);
+        this.validate(userDTO);
         return userRepository.findById(id).map(user -> {
-            if (StringUtils.hasLength(userDTO.getUsername()) &&
-                    !userDTO.getUsername().equals(user.getUsername()) &&
-                    userRepository.existsByUsernameAndDeletedIsFalseAndIdNot(user.getId(), userDTO.getUsername())) {
-                throw new IllegalArgumentException("Username already exists.");
-            }
-
-            user.setFirstName(userDTO.getFirstName());
             user.setLastName(userDTO.getLastName());
             user.setPatronymic(userDTO.getPatronymic());
             user.setUsername(userDTO.getUsername());
-
-            if (userDTO.getPassword() != null) {
-                user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-            }
-
-            if (StringUtils.hasLength(userDTO.getRole()) &&
-                    !user.getRole().name().equals(userDTO.getRole())) {
-                user.setRole(Role.valueOf(userDTO.getRole()));
-            }
-
+            user.setRole(userDTO.getRole());
+            user.setPositionId(userDTO.getPositionId());
+            user.setDepartmentId(userDTO.getDepartmentId());
             user.setBranchId(userDTO.getBranchId());
-            user.setCompanyId(userDTO.getCompanyId());
             return userRepository.save(user).getId();
-        }).orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
+        }).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
+    @Transactional
+    public void delete(Long id) {
+        userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        userRepository.deleteById(id);
+    }
 
-    public UserDetailCabinetDTO getForCabinet(Long id) {
+    public UserDetailDTO get(Long id) {
         return userRepository.findById(id).map(user -> {
-            UserDetailCabinetDTO userDetailDTO = new UserDetailCabinetDTO();
-            userDetailDTO.setId(id);
+            UserDetailDTO userDetailDTO = new UserDetailDTO();
+            userDetailDTO.setId(user.getId());
             userDetailDTO.setFirstName(user.getFirstName());
             userDetailDTO.setLastName(user.getLastName());
             userDetailDTO.setPatronymic(user.getPatronymic());
             userDetailDTO.setUsername(user.getUsername());
+            userDetailDTO.setRole(user.getRole());
             userDetailDTO.setStatus(user.getStatus());
             userDetailDTO.setBranch(user.getBranch().toCommonDTO());
-            userDetailDTO.setRole(user.getRole());
-            return userDetailDTO;
-        }).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-
-    }
-
-
-    public UserDetailAdminDTO getForAdmin(Long id) {
-        return userRepository.findById(id).map(user -> {
-            UserDetailAdminDTO userDetailDTO = new UserDetailAdminDTO();
-            userDetailDTO.setId(id);
-            userDetailDTO.setFirstName(user.getFirstName());
-            userDetailDTO.setLastName(user.getLastName());
-            userDetailDTO.setPatronymic(user.getPatronymic());
-            userDetailDTO.setUsername(user.getUsername());
-            userDetailDTO.setStatus(user.getStatus());
-            userDetailDTO.setRole(user.getRole());
-            if (user.getBranchId() != null) {
-                userDetailDTO.setBranch(user.getBranch().toCommonDTO());
-            }
+            userDetailDTO.setDepartment(user.getDepartment().toCommonDTO());
+            userDetailDTO.setPosition(user.getPosition().toCommonDTO());
             userDetailDTO.setCompany(user.getCompany().toCommonDTO());
             return userDetailDTO;
+
         }).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
     }
 
 
-    public Page<UserListCabinetDTO> getListForCabinet(UserFilter filter) {
+    public Page<UserListDTO> getList(UserFilter filter) {
         ResultList<User> resultList = userRepository.getResultList(filter);
-        List<UserListCabinetDTO> result = resultList
+        List<UserListDTO> result = resultList
                 .getList()
                 .stream()
                 .map(user -> {
-                    UserListCabinetDTO userListDTO = new UserListCabinetDTO();
+                    UserListDTO userListDTO = new UserListDTO();
                     userListDTO.setId(user.getId());
                     userListDTO.setFirstName(user.getFirstName());
                     userListDTO.setLastName(user.getLastName());
@@ -158,13 +151,17 @@ public class UserService {
         return new PageImpl<>(result, filter.getOrderedPageable(), resultList.getCount());
     }
 
-
     @Transactional
-    public void delete(Long id) {
-        userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        userRepository.deleteById(id);
+    public void updateStatus(Long id, UserStatus status) {
+        userRepository
+                .findById(id)
+                .map(user -> {
+                    user.setStatus(status);
+                    userRepository.save(user);
+                    return user;
+                })
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
-
 
 }
 

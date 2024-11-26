@@ -7,14 +7,15 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "position")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Position extends SimpleEntity{
-
+@SQLDelete(sql = "UPDATE position SET deleted = 'true' WHERE id=?")
+public class Position extends SimpleEntity {
 
     @NotNull
     @Column(name = "name", nullable = false)

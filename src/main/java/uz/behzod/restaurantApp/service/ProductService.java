@@ -92,7 +92,7 @@ public class ProductService {
             productDetailDTO.setName(product.getName());
             productDetailDTO.setBarcode(product.getBarcode());
             productDetailDTO.setUnitId(product.getUnitId());
-            productDetailDTO.setDepartmentId(product.getDepartmentId());
+            productDetailDTO.setDepartment(product.getDepartment().toCommonDTO());
             if (StringUtils.hasLength(product.getDescription())) {
                 productDetailDTO.setDescription(product.getDescription());
             }
@@ -112,7 +112,7 @@ public class ProductService {
                     productListDTO.setId(product.getId());
                     productListDTO.setName(product.getName());
                     productListDTO.setBarcode(product.getBarcode());
-                    productListDTO.setDepartmentId(product.getDepartmentId());
+                    productListDTO.setDepartment(product.getDepartment().toCommonDTO());
                     return productListDTO;
                 })
                 .collect(Collectors.toList());
