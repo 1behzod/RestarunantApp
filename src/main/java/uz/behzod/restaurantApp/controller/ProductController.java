@@ -13,7 +13,7 @@ import uz.behzod.restaurantApp.filters.product.ProductFilter;
 import uz.behzod.restaurantApp.service.ProductService;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/products")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class ProductController {

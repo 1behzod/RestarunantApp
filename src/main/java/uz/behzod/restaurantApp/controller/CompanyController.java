@@ -3,6 +3,7 @@ package uz.behzod.restaurantApp.controller;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import uz.behzod.restaurantApp.service.CompanyService;
 
 
 @RestController
-@RequestMapping("/api/company")
+@RequestMapping("/api/companies")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class CompanyController {
@@ -44,7 +45,7 @@ public class CompanyController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<CompanyListDTO>> getList(/*@ParameterObject */CompanyFilter filter) {
+    public ResponseEntity<Page<CompanyListDTO>> getList(@ParameterObject CompanyFilter filter) {
         return ResponseEntity.ok(companyService.getList(filter));
     }
 

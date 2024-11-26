@@ -13,7 +13,7 @@ import uz.behzod.restaurantApp.filters.menu.MenuItemFilter;
 import uz.behzod.restaurantApp.service.MenuItemService;
 
 @RestController
-@RequestMapping("/api/menuItem")
+@RequestMapping("/api/menu-items")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MenuItemController {

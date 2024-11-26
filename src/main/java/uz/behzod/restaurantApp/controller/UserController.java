@@ -48,8 +48,8 @@ public class UserController {
         return ResponseEntity.ok(userService.getList(filter));
     }
 
-    @PutMapping("/{id}/updateStatus")
-    public ResponseEntity<Void> updateStatus(@PathVariable Long id, UserStatus status) {
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Void> updateStatus(@PathVariable Long id, @RequestParam UserStatus status) {
         userService.updateStatus(id, status);
         return ResponseEntity.ok().build();
     }

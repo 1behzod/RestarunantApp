@@ -3,6 +3,7 @@ package uz.behzod.restaurantApp.controller;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ import uz.behzod.restaurantApp.filters.branch.BranchFilter;
 import uz.behzod.restaurantApp.service.BranchService;
 
 @RestController
-@RequestMapping("/api/branch")
+@RequestMapping("/api/branches")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BranchController {
@@ -21,13 +22,13 @@ public class BranchController {
     BranchService branchService;
 
     @PostMapping
-    public ResponseEntity<Long> create(@RequestBody BranchDTO branchDto) {
-        return ResponseEntity.ok(branchService.create(branchDto));
+    public ResponseEntity<Long> create(@RequestBody BranchDTO branchDTO) {
+        return ResponseEntity.ok(branchService.create(branchDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Long> update(@RequestBody BranchDTO branchDto, @PathVariable Long id) {
-        return ResponseEntity.ok(branchService.update(id, branchDto));
+    public ResponseEntity<Long> update(@RequestBody BranchDTO branchDTO, @PathVariable Long id) {
+        return ResponseEntity.ok(branchService.update(id, branchDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -42,7 +43,7 @@ public class BranchController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<BranchListDTO>> getList(BranchFilter filter) {
+    public ResponseEntity<Page<BranchListDTO>> getList(@ParameterObject BranchFilter filter) {
         return ResponseEntity.ok(branchService.getList(filter));
 
     }
