@@ -14,7 +14,7 @@ import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.product.ProductDTO;
 import uz.behzod.restaurantApp.dto.product.ProductDetailDTO;
 import uz.behzod.restaurantApp.dto.product.ProductListDTO;
-import uz.behzod.restaurantApp.filters.product.ProductFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.ProductRepository;
 
 import java.util.List;
@@ -25,19 +25,19 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 @Transactional(readOnly = true)
-public class ProductService {
+public class ProductService extends BaseService {
 
     ProductRepository productRepository;
 
     public void validate(ProductDTO productDTO) {
         if (!StringUtils.hasLength(productDTO.getName())) {
-            throw new RuntimeException("Product name is required");
+            throw badRequestExceptionThrow("Product name is required").get();
         }
         if (productDTO.getDepartmentId() == null) {
-            throw new RuntimeException("Department id is required");
+            throw badRequestExceptionThrow("Department id is required").get();
         }
         if (productDTO.getBarcode() == null) {
-            throw new RuntimeException("Barcode is required");
+            throw badRequestExceptionThrow("Barcode is required").get();
         }
        /* if (productDTO.getUnitId() == null) {
             throw new RuntimeException("Unit id is required");
@@ -62,7 +62,7 @@ public class ProductService {
 
     @Transactional
     public Long update(Long id, ProductDTO productDTO) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        Product product = productRepository.findById(id).orElseThrow(notFoundExceptionThrow("Product not found"));
         product.setId(id);
         this.validate(productDTO);
 
@@ -78,10 +78,10 @@ public class ProductService {
 
     @Transactional
     public void delete(Long id) {
-        if (productRepository.existsById(id)) {
-            productRepository.deleteById(id);
+        if (!productRepository.existsById(id)) {
+            throw notFoundExceptionThrow("Product not found").get();
         }
-        throw new RuntimeException("Product not found");
+        productRepository.deleteById(id);
     }
 
     public ProductDetailDTO get(Long id) {
@@ -98,11 +98,11 @@ public class ProductService {
             }
             return productDetailDTO;
 
-        }).orElseThrow(() -> new RuntimeException("Product not found"));
+        }).orElseThrow(notFoundExceptionThrow("Product not found"));
     }
 
 
-    public Page<ProductListDTO> getList(ProductFilter filter) {
+    public Page<ProductListDTO> getList(BaseFilter filter) {
         ResultList<Product> resultList = productRepository.getResultList(filter);
         List<ProductListDTO> result = resultList
                 .getList()

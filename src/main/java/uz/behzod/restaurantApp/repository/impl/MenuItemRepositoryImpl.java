@@ -5,7 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import uz.behzod.restaurantApp.domain.menu.MenuItem;
 import uz.behzod.restaurantApp.dto.base.ResultList;
-import uz.behzod.restaurantApp.filters.menu.MenuItemFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.custom.MenuItemRepositoryCustom;
 
 public class MenuItemRepositoryImpl implements MenuItemRepositoryCustom {
@@ -14,7 +14,7 @@ public class MenuItemRepositoryImpl implements MenuItemRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public ResultList<MenuItem> getResultList(MenuItemFilter filter) {
+    public ResultList<MenuItem> getResultList(BaseFilter filter) {
         ResultList<MenuItem> resultList = new ResultList<>();
         StringBuilder sql = new StringBuilder();
         sql.append("select m from MenuItem m ");
@@ -32,10 +32,7 @@ public class MenuItemRepositoryImpl implements MenuItemRepositoryCustom {
         sql.append("order by m.").append(filter.getOrderBy());
         sql.append(" ").append(filter.getSortOrder());
 
-        TypedQuery<MenuItem> query = entityManager
-                .createQuery(sql.toString(), MenuItem.class)
-                .setFirstResult(filter.getStart())
-                .setMaxResults(filter.getSize());
+        TypedQuery<MenuItem> query = entityManager.createQuery(sql.toString(), MenuItem.class).setFirstResult(filter.getStart()).setMaxResults(filter.getSize());
 
         TypedQuery<Long> countQuery = entityManager.createQuery(countSql, Long.class);
 

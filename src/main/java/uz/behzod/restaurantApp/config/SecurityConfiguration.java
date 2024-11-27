@@ -45,12 +45,12 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/api/company/**").permitAll()
-                                .requestMatchers("/api/branch/**").permitAll()
-                                .requestMatchers("/api/department/**").permitAll()
-                                .requestMatchers("/api/menuItem/**").permitAll()
-                                .requestMatchers("/api/menu/**").permitAll()
-                                .requestMatchers("/api/product/**").permitAll()
+                                .requestMatchers("/api/companies/**").permitAll()
+                                .requestMatchers("/api/branches/**").permitAll()
+                                .requestMatchers("/api/departments/**").permitAll()
+                                .requestMatchers("/api/menu-items/**").permitAll()
+                                .requestMatchers("/api/menus/**").permitAll()
+                                .requestMatchers("/api/products/**").permitAll()
                                 .requestMatchers("/users/**").permitAll()
                                 .requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
                                 .anyRequest()

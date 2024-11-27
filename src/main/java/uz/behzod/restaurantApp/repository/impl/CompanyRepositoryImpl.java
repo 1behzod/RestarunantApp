@@ -5,7 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import uz.behzod.restaurantApp.domain.company.Company;
 import uz.behzod.restaurantApp.dto.base.ResultList;
-import uz.behzod.restaurantApp.filters.company.CompanyFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.custom.CompanyRepositoryCustom;
 
 public class CompanyRepositoryImpl implements CompanyRepositoryCustom {
@@ -14,7 +14,7 @@ public class CompanyRepositoryImpl implements CompanyRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public ResultList<Company> getResultList(CompanyFilter filter) {
+    public ResultList<Company> getResultList(BaseFilter filter) {
 
         ResultList<Company> resultList = new ResultList<>();
         StringBuilder sql = new StringBuilder();

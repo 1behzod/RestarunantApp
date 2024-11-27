@@ -16,7 +16,7 @@ import uz.behzod.restaurantApp.dto.user.UserDTO;
 import uz.behzod.restaurantApp.dto.user.UserDetailDTO;
 import uz.behzod.restaurantApp.dto.user.UserListDTO;
 import uz.behzod.restaurantApp.enums.UserStatus;
-import uz.behzod.restaurantApp.filters.user.UserFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.UserRepository;
 
 import java.util.List;
@@ -28,34 +28,34 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PROTECTED, makeFinal = true)
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserService {
+public class UserService extends BaseService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
 
     private void validate(UserDTO userDTO) {
         if (!StringUtils.hasLength(userDTO.getFirstName())) {
-            throw new RuntimeException("Name is required");
+            throw badRequestExceptionThrow("Name is required").get();
         }
         if (!StringUtils.hasLength(userDTO.getUsername())) {
-            throw new RuntimeException("Username is required");
+            throw badRequestExceptionThrow("Username is required").get();
         }
         if (!StringUtils.hasLength(userDTO.getPassword())) {
-            throw new RuntimeException("Password is required");
+            throw badRequestExceptionThrow("Password is required").get();
         }
         if (userDTO.getBranchId() == null) {
-            throw new RuntimeException("BranchId is required");
+            throw badRequestExceptionThrow("BranchId is required").get();
         }
         if (userDTO.getRole() == null) {
-            throw new RuntimeException("Role is required");
+            throw badRequestExceptionThrow("Role is required").get();
         }
         if (userDTO.getDepartmentId() == null) {
-            throw new RuntimeException("DepartmentId is required");
+            throw badRequestExceptionThrow("DepartmentId is required").get();
         }
         if (userDTO.getPositionId() == null) {
-            throw new RuntimeException("PositionId is required");
+            throw badRequestExceptionThrow("PositionId is required").get();
         }
         if (userDTO.getCompanyId() == null) {
-            throw new RuntimeException("CompanyId is required");
+            throw badRequestExceptionThrow("CompanyId is required").get();
         }
        /* if (userDTO.getId() == null) {
             if (userRepository.findByUsernameAndDeletedIsFalse((userDTO.getUsername()))) {
@@ -100,12 +100,14 @@ public class UserService {
             user.setDepartmentId(userDTO.getDepartmentId());
             user.setBranchId(userDTO.getBranchId());
             return userRepository.save(user).getId();
-        }).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        }).orElseThrow(notFoundExceptionThrow("User not found with id: " + id));
     }
 
     @Transactional
     public void delete(Long id) {
-        userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        if (!userRepository.existsById(id)) {
+            throw (notFoundExceptionThrow("User not found")).get();
+        }
         userRepository.deleteById(id);
     }
 
@@ -125,12 +127,12 @@ public class UserService {
             userDetailDTO.setCompany(user.getCompany().toCommonDTO());
             return userDetailDTO;
 
-        }).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        }).orElseThrow(notFoundExceptionThrow("User not found with id: " + id));
 
     }
 
 
-    public Page<UserListDTO> getList(UserFilter filter) {
+    public Page<UserListDTO> getList(BaseFilter filter) {
         ResultList<User> resultList = userRepository.getResultList(filter);
         List<UserListDTO> result = resultList
                 .getList()
@@ -160,7 +162,7 @@ public class UserService {
                     userRepository.save(user);
                     return user;
                 })
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(notFoundExceptionThrow("User not found with id: " + id));
     }
 
 }

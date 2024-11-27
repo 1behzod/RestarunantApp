@@ -5,7 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.dto.base.ResultList;
-import uz.behzod.restaurantApp.filters.branch.BranchFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.custom.BranchRepositoryCustom;
 
 
@@ -15,7 +15,7 @@ public class BranchRepositoryImpl implements BranchRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public ResultList<Branch> getResultList(BranchFilter filter) {
+    public ResultList<Branch> getResultList(BaseFilter filter) {
         ResultList<Branch> resultList = new ResultList<>();
         StringBuilder sql = new StringBuilder();
         sql.append("select b from Branch b ");

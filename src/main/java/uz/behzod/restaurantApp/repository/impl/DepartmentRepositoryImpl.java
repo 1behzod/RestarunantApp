@@ -5,7 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import uz.behzod.restaurantApp.domain.Department;
 import uz.behzod.restaurantApp.dto.base.ResultList;
-import uz.behzod.restaurantApp.filters.department.DepartmentFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.custom.DepartmentRepositoryCustom;
 
 public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
@@ -15,7 +15,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public ResultList<Department> getResultList(DepartmentFilter filter) {
+    public ResultList<Department> getResultList(BaseFilter filter) {
         ResultList<Department> resultList = new ResultList<>();
         StringBuilder sql = new StringBuilder();
         sql.append("select d from Department d ");

@@ -17,8 +17,9 @@ import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.company.CompanyDTO;
 import uz.behzod.restaurantApp.dto.company.CompanyDetailDTO;
 import uz.behzod.restaurantApp.dto.company.CompanyListDTO;
-import uz.behzod.restaurantApp.filters.company.CompanyFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.CompanyRepository;
+import uz.behzod.restaurantApp.errors.BadRequestException;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,34 +30,34 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional(readOnly = true)
-public class CompanyService {
+public class CompanyService extends BaseService {
 
     CompanyRepository companyRepository;
 
     private void validate(CompanyDTO companyDTO) {
         if (!StringUtils.hasLength(companyDTO.getName())) {
-            throw new RuntimeException("Company name cannot be empty");
+             throw badRequestExceptionThrow("Company name is required").get();
         }
         if (!StringUtils.hasLength(companyDTO.getTin())) {
-            throw new RuntimeException("Company TIN cannot be empty");
+            throw badRequestExceptionThrow("Company TIN is required").get();
         }
         if (!StringUtils.hasLength(companyDTO.getPinfl())) {
-            throw new RuntimeException("Company PINFL cannot be empty");
+            throw badRequestExceptionThrow("Company PINFL is required").get();
         }
         if (companyDTO.getId() == null) {
             if (companyRepository.existsByTin(companyDTO.getTin())) {
-                throw new RuntimeException("Company exists with TIN:" + companyDTO.getTin());
+                throw conflictExceptionThrow("Company exists with TIN:" + companyDTO.getTin()).get();
             }
             if (companyRepository.existsByPinfl(companyDTO.getPinfl())) {
-                throw new RuntimeException("Company exists with PINFL:" + companyDTO.getPinfl());
+                throw conflictExceptionThrow("Company exists with PINFL:" + companyDTO.getPinfl()).get();
             }
         }
         if (companyDTO.getId() != null) {
             if (companyRepository.existsByTinAndIdNot(companyDTO.getTin(), companyDTO.getId())) {
-                throw new RuntimeException("Company exists with TIN:" + companyDTO.getTin());
+                throw conflictExceptionThrow("Company exists with TIN:" + companyDTO.getTin()).get();
             }
             if (companyRepository.existsByPinflAndIdNot(companyDTO.getPinfl(), companyDTO.getId())) {
-                throw new RuntimeException("Company exists with PINFL:" + companyDTO.getPinfl());
+                throw conflictExceptionThrow("Company exists with PINFL:" + companyDTO.getPinfl()).get();
             }
         }
     }
@@ -83,7 +84,7 @@ public class CompanyService {
 
     @Transactional
     public Long update(Long id, CompanyDTO companyDTO) {
-        Company company = companyRepository.findById(id).orElseThrow(() -> new RuntimeException("Company not found"));
+        Company company = companyRepository.findById(id).orElseThrow(notFoundExceptionThrow("Company not found"));
         companyDTO.setId(id);
         this.validate(companyDTO);
 
@@ -105,7 +106,7 @@ public class CompanyService {
     @Transactional
     public void delete(Long id) {
         if (!companyRepository.existsById(id)) {
-            throw new RuntimeException("Company not found with id: " + id);
+            throw notFoundExceptionThrow("Company not found with id: " + id).get();
         }
         companyRepository.deleteById(id);
     }
@@ -128,11 +129,11 @@ public class CompanyService {
                 companyDetailDTO.setAddress(addressDetailDTO);
             }
             return companyDetailDTO;
-        }).orElseThrow(() -> new RuntimeException("Company not found"));
+        }).orElseThrow(notFoundExceptionThrow("Company not found"));
     }
 
 
-    public Page<CompanyListDTO> getList(CompanyFilter filter) {
+    public Page<CompanyListDTO> getList(BaseFilter filter) {
         ResultList<Company> resultList = companyRepository.getResultList(filter);
         List<CompanyListDTO> result = resultList
                 .getList()

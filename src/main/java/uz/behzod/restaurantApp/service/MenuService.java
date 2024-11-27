@@ -15,7 +15,7 @@ import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.menu.MenuDTO;
 import uz.behzod.restaurantApp.dto.menu.MenuDetailDTO;
 import uz.behzod.restaurantApp.dto.menu.MenuListDTO;
-import uz.behzod.restaurantApp.filters.menu.MenuFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.MenuRepository;
 
 import java.util.List;
@@ -26,25 +26,25 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
-public class MenuService {
+public class MenuService extends BaseService {
 
     MenuRepository menuRepository;
 
     private void validate(MenuDTO menuDTO) {
         if (!StringUtils.hasLength(menuDTO.getName())) {
-            throw new RuntimeException("Menu name cannot be empty");
+            throw badRequestExceptionThrow("Menu name is required").get();
         }
         if (menuDTO.getBranchId() == null) {
-            throw new RuntimeException("Menu branch id cannot be empty");
+            throw badRequestExceptionThrow("Menu branch id cannot be empty").get();
         }
         if (menuDTO.getId() == null) {
             if (menuRepository.existsByNameAndBranchIdAndDeletedIsFalse(menuDTO.getName(), menuDTO.getBranchId())) {
-                throw new RuntimeException("Menu name already exists");
+                throw conflictExceptionThrow("Menu name already exists").get();
             }
         }
         if (menuDTO.getId() != null) {
             if (menuRepository.existsByNameAndBranchIdAndDeletedIsFalseAndIdNot(menuDTO.getName(), menuDTO.getBranchId(), menuDTO.getId())) {
-                throw new RuntimeException("Menu name already exists");
+                throw conflictExceptionThrow("Menu name already exists").get();
             }
         }
         //TODO current branch bilan tekshirish kere, har hil branchda bir hil menu yaratib bolmadi
@@ -61,7 +61,7 @@ public class MenuService {
 
     @Transactional
     public Long update(Long id, MenuDTO menuDTO) {
-        Menu menu = menuRepository.findById(id).orElseThrow(() -> new RuntimeException("Menu not found"));
+        Menu menu = menuRepository.findById(id).orElseThrow(notFoundExceptionThrow("Menu not found"));
         menu.setId(id);
         this.validate(menuDTO);
 
@@ -74,7 +74,7 @@ public class MenuService {
     @Transactional
     public void delete(Long id) {
         if (!menuRepository.existsById(id)) {
-            throw new RuntimeException("Menu not found");
+            throw notFoundExceptionThrow("Menu not found").get();
         }
         menuRepository.deleteById(id);
     }
@@ -87,11 +87,11 @@ public class MenuService {
             menuDetailDTO.setName(menu.getName());
             menuDetailDTO.setBranch(menu.getBranch().toCommonDTO());
             return menuDetailDTO;
-        }).orElseThrow(() -> new RuntimeException("Menu not found"));
+        }).orElseThrow(notFoundExceptionThrow("Menu not found"));
     }
 
 
-    public Page<MenuListDTO> getList(MenuFilter filter) {
+    public Page<MenuListDTO> getList(BaseFilter filter) {
         ResultList<Menu> resultList = menuRepository.getResultList(filter);
         List<MenuListDTO> result = resultList
                 .getList()

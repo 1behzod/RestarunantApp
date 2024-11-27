@@ -1,66 +1,51 @@
 package uz.behzod.restaurantApp.filters;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.util.StringUtils;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PROTECTED)
-public class BaseFilter {
+public class BaseFilter extends SimpleFilter {
 
-    Integer page = 0;
+    Long menuId;
 
-    Integer size = 20;
+    Long employeeId;
 
-    String search = "";
+    Long companyId;
 
-    String orderBy = "id";
+    Long branchId;
 
-    String sortOrder = "desc";
+    Long departmentId;
 
-    public String getSearch() {
-        return this.search = this.search != null ? this.search.trim().replaceAll("[.!?,'{}]", "").toLowerCase() : null;
+    Long positionId;
+
+    String status;
+
+    String type;
+
+    LocalDateTime fromDate;
+
+    LocalDateTime toDate;
+
+    Long regionId;
+
+    Long districtId;
+
+    Long neighborhoodId;
+
+    //Start day of this day. 00:00
+    public LocalDateTime getFromDate() {
+        return fromDate.toLocalDate().atStartOfDay();
     }
 
-    @JsonIgnore
-    public boolean isSearchNotEmpty() {
-        return StringUtils.hasLength(search);
-    }
-
-    @JsonIgnore
-    public String getSearchFor() {
-        return "%" + search.toLowerCase() + "%";
-    }
-
-    @JsonIgnore
-    public String getLikeSearch() {
-        return " like (:searchKey)";
-    }
-
-    @JsonIgnore
-    public Sort getOrderedSortBy() {
-        return sortOrder.equals("asc") ? Sort.by(orderBy).ascending() : Sort.by(orderBy).descending();
-    }
-
-    @JsonIgnore
-    public Pageable getPageable() {
-        return PageRequest.of(page, size);
-    }
-
-    @JsonIgnore
-    public Pageable getOrderedPageable() {
-        return PageRequest.of(page, size, getOrderedSortBy());
-    }
-
-    @JsonIgnore
-    public int getStart() {
-        return this.getPage() * this.getSize();
+    //End day of this day 23:59:59
+    public LocalDateTime getToDate() {
+        return toDate.toLocalDate().atTime(LocalTime.MAX);
     }
 }

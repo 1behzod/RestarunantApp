@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.behzod.restaurantApp.dto.menu.MenuItemDTO;
 import uz.behzod.restaurantApp.dto.menu.MenuItemDetailDTO;
 import uz.behzod.restaurantApp.dto.menu.MenuItemListDTO;
-import uz.behzod.restaurantApp.filters.menu.MenuItemFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.service.MenuItemService;
 
 @RestController
@@ -26,7 +26,7 @@ public class MenuItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Long> update(@RequestBody Long id, MenuItemDTO menuItemDTO) {
+    public ResponseEntity<Long> update(@PathVariable Long id, MenuItemDTO menuItemDTO) {
         return ResponseEntity.ok(menuItemService.update(id, menuItemDTO));
     }
 
@@ -42,7 +42,7 @@ public class MenuItemController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<MenuItemListDTO>> getList(MenuItemFilter filter) {
+    public ResponseEntity<Page<MenuItemListDTO>> getList(BaseFilter filter) {
         return ResponseEntity.ok(menuItemService.getList(filter));
     }
 

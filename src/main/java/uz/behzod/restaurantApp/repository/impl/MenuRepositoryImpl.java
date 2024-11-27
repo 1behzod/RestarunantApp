@@ -5,7 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import uz.behzod.restaurantApp.domain.menu.Menu;
 import uz.behzod.restaurantApp.dto.base.ResultList;
-import uz.behzod.restaurantApp.filters.menu.MenuFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.custom.MenuRepositoryCustom;
 
 public class MenuRepositoryImpl implements MenuRepositoryCustom {
@@ -14,7 +14,7 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public ResultList<Menu> getResultList(MenuFilter filter) {
+    public ResultList<Menu> getResultList(BaseFilter filter) {
 
         ResultList<Menu> resultList = new ResultList<>();
         StringBuilder sql = new StringBuilder();

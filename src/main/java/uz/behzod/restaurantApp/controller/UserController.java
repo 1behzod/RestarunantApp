@@ -11,7 +11,7 @@ import uz.behzod.restaurantApp.dto.user.UserDTO;
 import uz.behzod.restaurantApp.dto.user.UserDetailDTO;
 import uz.behzod.restaurantApp.dto.user.UserListDTO;
 import uz.behzod.restaurantApp.enums.UserStatus;
-import uz.behzod.restaurantApp.filters.user.UserFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.service.UserService;
 
 @RestController
@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserListDTO>> getList(UserFilter filter) {
+    public ResponseEntity<Page<UserListDTO>> getList(BaseFilter filter) {
         return ResponseEntity.ok(userService.getList(filter));
     }
 

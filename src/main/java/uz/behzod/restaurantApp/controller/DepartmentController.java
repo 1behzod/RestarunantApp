@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.behzod.restaurantApp.dto.department.DepartmentDTO;
 import uz.behzod.restaurantApp.dto.department.DepartmentDetailDTO;
 import uz.behzod.restaurantApp.dto.department.DepartmentListDTO;
-import uz.behzod.restaurantApp.filters.department.DepartmentFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.service.DepartmentService;
 
 @RestController
@@ -43,7 +43,7 @@ public class DepartmentController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DepartmentListDTO>> getList(@ParameterObject DepartmentFilter filter) {
+    public ResponseEntity<Page<DepartmentListDTO>> getList(@ParameterObject BaseFilter filter) {
         return ResponseEntity.ok(departmentService.getList(filter));
     }
 

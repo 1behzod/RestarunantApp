@@ -14,7 +14,7 @@ import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.department.DepartmentDTO;
 import uz.behzod.restaurantApp.dto.department.DepartmentDetailDTO;
 import uz.behzod.restaurantApp.dto.department.DepartmentListDTO;
-import uz.behzod.restaurantApp.filters.department.DepartmentFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.DepartmentRepository;
 
 import java.util.List;
@@ -25,17 +25,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional(readOnly = true)
-public class DepartmentService {
+public class DepartmentService extends BaseService {
 
     DepartmentRepository departmentRepository;
 
 
     private void validate(DepartmentDTO departmentDTO) {
         if (!StringUtils.hasLength(departmentDTO.getName())) {
-            throw new RuntimeException("Department name is required");
+            throw badRequestExceptionThrow("Department name is required").get();
         }
         if (departmentDTO.getBranchId() == null) {
-            throw new RuntimeException("Branch is required");
+            throw badRequestExceptionThrow("Branch is required").get();
         }
             /*if (departmentDTO.getId() != null && departmentRepository.existsByNameIgnoreCaseAndBranchId( departmentDTO.getName(), departmentDTO.getId())) {
                 throw new RuntimeException("Department exists with name " + departmentDTO.getName());
@@ -43,12 +43,12 @@ public class DepartmentService {
 
         if (departmentDTO.getId() == null) {
             if (departmentRepository.existsByNameIgnoreCaseAndBranchId(departmentDTO.getName(), departmentDTO.getBranchId())) {
-                throw new RuntimeException("Department already exists with name " + departmentDTO.getName());
+                throw conflictExceptionThrow("Department already exists with name " + departmentDTO.getName()).get();
             }
         } else {
             if (departmentRepository.existsByNameIgnoreCaseAndBranchIdAndIdNot(
                     departmentDTO.getName(), departmentDTO.getBranchId(), departmentDTO.getId())) {
-                throw new RuntimeException("Department already exists with name " + departmentDTO.getName());
+                throw conflictExceptionThrow("Department already exists with name " + departmentDTO.getName()).get();
             }
         }
     }
@@ -64,7 +64,7 @@ public class DepartmentService {
 
     @Transactional
     public Long update(DepartmentDTO departmentDTO, Long id) {
-        Department department = departmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Department not found"));
+        Department department = departmentRepository.findById(id).orElseThrow(notFoundExceptionThrow("Department not found"));
         department.setId(id);
         this.validate(departmentDTO);
 
@@ -76,7 +76,7 @@ public class DepartmentService {
     @Transactional
     public void delete(Long id) {
         if (!departmentRepository.existsById(id)) {
-            throw new RuntimeException("Department not found with id: " + id);
+            throw notFoundExceptionThrow("Department not found with id: " + id).get();
         }
         departmentRepository.deleteById(id);
     }
@@ -87,12 +87,11 @@ public class DepartmentService {
             departmentDetailDto.setId(department.getId());
             departmentDetailDto.setName(department.getName());
             departmentDetailDto.setBranch(department.getBranch().toCommonDTO());
-
             return departmentDetailDto;
-        }).orElseThrow(() -> new RuntimeException("Department not found"));
+        }).orElseThrow(notFoundExceptionThrow("Department not found"));
     }
 
-    public Page<DepartmentListDTO> getList(DepartmentFilter filter) {
+    public Page<DepartmentListDTO> getList(BaseFilter filter) {
         ResultList<Department> resultList = departmentRepository.getResultList(filter);
 
         List<DepartmentListDTO> result = resultList

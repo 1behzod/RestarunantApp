@@ -13,10 +13,10 @@ import uz.behzod.restaurantApp.domain.address.Address;
 import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.dto.address.AddressDetailDTO;
 import uz.behzod.restaurantApp.dto.base.ResultList;
-import uz.behzod.restaurantApp.dto.branch.BranchDetailDTO;
 import uz.behzod.restaurantApp.dto.branch.BranchDTO;
+import uz.behzod.restaurantApp.dto.branch.BranchDetailDTO;
 import uz.behzod.restaurantApp.dto.branch.BranchListDTO;
-import uz.behzod.restaurantApp.filters.branch.BranchFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.BranchRepository;
 
 import java.util.List;
@@ -28,17 +28,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @Transactional(readOnly = true)
-public class BranchService {
+public class BranchService extends BaseService {
 
     BranchRepository branchRepository;
 
-    public void validate(BranchDTO branchDto) {
+    public void validate(BranchDTO branchDTO) {
 
-        if (!StringUtils.hasLength(branchDto.getName())) {
-            throw new RuntimeException("Name field is required");
+        if (!StringUtils.hasLength(branchDTO.getName())) {
+            throw badRequestExceptionThrow("Name field is required").get();
         }
-        if (branchDto.getCompanyId() == null) {
-            throw new RuntimeException("Company is required");
+        if (branchDTO.getCompanyId() == null) {
+            throw badRequestExceptionThrow("Company is required").get();
         }
        /* if (branchDto.getAddress() == null) {
             throw new RuntimeException("Address is required");
@@ -47,13 +47,13 @@ public class BranchService {
             throw new RuntimeException("Branch exists by this name: " + branchDto.getName());
         }*/
 
-        if (branchDto.getId() == null) {
-            if (branchRepository.existsByNameIgnoreCaseAndCompanyId(branchDto.getName(), branchDto.getCompanyId())) {
-                throw new RuntimeException("Branch already exists by this name: " + branchDto.getName());
+        if (branchDTO.getId() == null) {
+            if (branchRepository.existsByNameIgnoreCaseAndCompanyId(branchDTO.getName(), branchDTO.getCompanyId())) {
+                throw conflictExceptionThrow("Branch already exists by this name: " + branchDTO.getName()).get();
             }
         } else {
-            if (branchRepository.existsByNameIgnoreCaseAndCompanyIdAndIdNot(branchDto.getName(), branchDto.getCompanyId(), branchDto.getId())) {
-                throw new RuntimeException("Branch already exists by this name: " + branchDto.getName());
+            if (branchRepository.existsByNameIgnoreCaseAndCompanyIdAndIdNot(branchDTO.getName(), branchDTO.getCompanyId(), branchDTO.getId())) {
+                throw conflictExceptionThrow("Branch already exists by this name: " + branchDTO.getName()).get();
             }
         }
     }
@@ -80,7 +80,7 @@ public class BranchService {
     @Transactional
     public Long update(Long id, BranchDTO branchDto) {
         Branch branch = branchRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Branch not found"));
+                .orElseThrow(notFoundExceptionThrow("Branch not found"));
         branchDto.setId(id);
         this.validate(branchDto);
         branch.setName(branchDto.getName());
@@ -100,7 +100,7 @@ public class BranchService {
     @Transactional
     public void delete(Long id) {
         if (!branchRepository.existsById(id)) {
-            throw new RuntimeException("Branch not found with id: " + id);
+            throw notFoundExceptionThrow("Branch not found with id: " + id).get();
         }
         branchRepository.deleteById(id);
     }
@@ -121,10 +121,10 @@ public class BranchService {
                 branchDetailDto.setAddress(addressDetailDTO);
             }
             return branchDetailDto;
-        }).orElseThrow(() -> new RuntimeException("Branch not found"));
+        }).orElseThrow(notFoundExceptionThrow("Branch not found"));
     }
 
-    public Page<BranchListDTO> getList(BranchFilter filter) {
+    public Page<BranchListDTO> getList(BaseFilter filter) {
         ResultList<Branch> resultList = branchRepository.getResultList(filter);
         List<BranchListDTO> result = resultList
                 .getList()

@@ -6,7 +6,7 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.util.CollectionUtils;
 import uz.behzod.restaurantApp.domain.auth.User;
 import uz.behzod.restaurantApp.dto.base.ResultList;
-import uz.behzod.restaurantApp.filters.user.UserFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.custom.UserRepositoryCustom;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
@@ -15,7 +15,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public ResultList<User> getResultList(UserFilter filter) {
+    public ResultList<User> getResultList(BaseFilter filter) {
         ResultList<User> resultList = new ResultList<>();
         StringBuilder sql = new StringBuilder();
         sql.append("select u from User u ");
@@ -30,15 +30,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         if (filter.getDepartmentId() != null) {
             sql.append(" and u.departmentId = :departmentId ");
         }
-        if (filter.getRole() != null) {
+        /*if (filter.getRole() != null) {
             sql.append(" and u.role = :role ");
-        }
+        }*/
         if (filter.getStatus() != null) {
             sql.append(" and u.status = :status ");
         }
-        if (!CollectionUtils.isEmpty(filter.getRoles())) {
+       /* if (!CollectionUtils.isEmpty(filter.getRoles())) {
             sql.append(" and u.role in (:roles) ");
-        }
+        }*/
         if (filter.isSearchNotEmpty()) {
             sql.append(" and (");
             sql.append(" lower(u.name)").append(filter.getLikeSearch());
@@ -70,7 +70,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
             query.setParameter("departmentId", filter.getDepartmentId());
             countQuery.setParameter("departmentId", filter.getDepartmentId());
         }
-        if (filter.getRole() != null) {
+  /*      if (filter.getRole() != null) {
             query.setParameter("role", filter.getRole());
             countQuery.setParameter("role", filter.getRole());
         }
@@ -81,7 +81,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         if (filter.getRoles() != null && !filter.getRoles().isEmpty()) {
             query.setParameter("roles", filter.getRoles());
             countQuery.setParameter("roles", filter.getRoles());
-        }
+        }*/
         if (filter.isSearchNotEmpty()) {
             query.setParameter("searchKey", filter.getSearchFor());
             countQuery.setParameter("searchKey", filter.getSearchFor());

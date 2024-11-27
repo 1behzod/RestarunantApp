@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.behzod.restaurantApp.dto.company.CompanyDTO;
 import uz.behzod.restaurantApp.dto.company.CompanyDetailDTO;
 import uz.behzod.restaurantApp.dto.company.CompanyListDTO;
-import uz.behzod.restaurantApp.filters.company.CompanyFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.service.CompanyService;
 
 
@@ -45,7 +45,7 @@ public class CompanyController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<CompanyListDTO>> getList(@ParameterObject CompanyFilter filter) {
+    public ResponseEntity<Page<CompanyListDTO>> getList(@ParameterObject BaseFilter filter) {
         return ResponseEntity.ok(companyService.getList(filter));
     }
 

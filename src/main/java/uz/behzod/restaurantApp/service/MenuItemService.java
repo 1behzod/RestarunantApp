@@ -13,7 +13,7 @@ import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.menu.MenuItemDTO;
 import uz.behzod.restaurantApp.dto.menu.MenuItemDetailDTO;
 import uz.behzod.restaurantApp.dto.menu.MenuItemListDTO;
-import uz.behzod.restaurantApp.filters.menu.MenuItemFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.MenuItemRepository;
 
 import java.util.List;
@@ -22,25 +22,25 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class MenuItemService {
+public class MenuItemService extends BaseService {
 
     MenuItemRepository menuItemRepository;
 
     private void validate(MenuItemDTO menuItemDTO) {
         if (!StringUtils.hasLength(menuItemDTO.getName())) {
-            throw new RuntimeException("Item name is required");
+            throw badRequestExceptionThrow("Item name is required").get();
         }
         if (menuItemDTO.getMenuId() == null) {
-            throw new RuntimeException("Menu id is required");
+            throw badRequestExceptionThrow("Menu id is required").get();
         }
         if (menuItemDTO.getPrice() == null) {
-            throw new RuntimeException("Item price is required");
+            throw badRequestExceptionThrow("Item price is required").get();
         }
         if (menuItemDTO.getProductId() == null) {
-            throw new RuntimeException("Item product is required");
+            throw badRequestExceptionThrow("Item product is required").get();
         }
         if (menuItemDTO.getUnitId() == null) {
-            throw new RuntimeException("Item unit is required");
+            throw badRequestExceptionThrow("Item unit is required").get();
         }
         //TODO validation for product and unit
 
@@ -60,7 +60,7 @@ public class MenuItemService {
 
     @Transactional
     public Long update(Long id, MenuItemDTO menuItemDTO) {
-        MenuItem menuItem = menuItemRepository.findById(id).orElseThrow(() -> new RuntimeException("Menu item not found"));
+        MenuItem menuItem = menuItemRepository.findById(id).orElseThrow(notFoundExceptionThrow("Menu item not found"));
         menuItemDTO.setId(id);
         this.validate(menuItemDTO);
 
@@ -75,7 +75,7 @@ public class MenuItemService {
     @Transactional
     public void delete(Long id) {
         if (!menuItemRepository.existsById(id)) {
-            throw new RuntimeException("Menu item not found");
+            throw notFoundExceptionThrow("Menu item not found").get();
         }
         menuItemRepository.deleteById(id);
     }
@@ -86,13 +86,13 @@ public class MenuItemService {
             menuItemDetailDTO.setName(menuItem.getName());
             menuItemDetailDTO.setPrice(menuItem.getPrice());
             menuItemDetailDTO.setProduct(menuItem.getProduct().toCommonDTO());
-          //  menuItemDetailDTO.setUnit(menuItem.getUnit().toCommonDTO());
+            //  menuItemDetailDTO.setUnit(menuItem.getUnit().toCommonDTO());
             return menuItemDetailDTO;
 
-        }).orElseThrow(() -> new RuntimeException("Menu item not found"));
+        }).orElseThrow(notFoundExceptionThrow("Menu item not found"));
     }
 
-    public Page<MenuItemListDTO> getList(MenuItemFilter filter) {
+    public Page<MenuItemListDTO> getList(BaseFilter filter) {
         ResultList<MenuItem> resultList = menuItemRepository.getResultList(filter);
         List<MenuItemListDTO> result = resultList
                 .getList()

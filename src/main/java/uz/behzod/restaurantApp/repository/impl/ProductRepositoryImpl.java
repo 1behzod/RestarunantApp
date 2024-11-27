@@ -5,7 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import uz.behzod.restaurantApp.domain.product.Product;
 import uz.behzod.restaurantApp.dto.base.ResultList;
-import uz.behzod.restaurantApp.filters.product.ProductFilter;
+import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.custom.ProductRepositoryCustom;
 
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
@@ -14,21 +14,19 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     EntityManager entityManager;
 
     @Override
-    public ResultList<Product> getResultList(ProductFilter filter) {
+    public ResultList<Product> getResultList(BaseFilter filter) {
         ResultList<Product> resultList = new ResultList<>();
         StringBuilder sql = new StringBuilder();
         sql.append("select p from Product p ");
         sql.append("where p.deleted = false");
 
-        if (filter.getBarcode() != null) {
-            sql.append(" and p.barcode = :barcode ");
-        }
         if (filter.getDepartmentId() != null) {
             sql.append(" and p.department = :department ");
         }
         if (filter.isSearchNotEmpty()) {
             sql.append(" and (");
             sql.append(" lower(p.name)").append(filter.getLikeSearch());
+            sql.append(" or lower(p.barcode)").append(filter.getLikeSearch());
             sql.append(")").append(filter.getLikeSearch());
         }
 
@@ -47,10 +45,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         if (filter.getDepartmentId() != null) {
             query.setParameter("departmentId", filter.getDepartmentId());
             countQuery.setParameter("departmentId", filter.getDepartmentId());
-        }
-        if (filter.getBarcode() != null) {
-            query.setParameter("barcode", filter.getBarcode());
-            countQuery.setParameter("barcode", filter.getBarcode());
         }
         if (filter.isSearchNotEmpty()) {
             query.setParameter("search", filter.getSearchFor());
