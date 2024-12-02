@@ -12,7 +12,7 @@ import uz.behzod.restaurantApp.dto.base.CommonDTO;
 @Setter
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PACKAGE)
-public class FileDTO extends CommonDTO {
+public class FileListDTO extends CommonDTO {
 
     Long fileSize;
 

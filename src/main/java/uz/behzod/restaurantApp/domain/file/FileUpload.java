@@ -20,18 +20,23 @@ import java.time.LocalDateTime;
 public class FileUpload extends SimpleEntity {
 
     @NotNull
-    @Column(name = "original_name", nullable = false)
-    String originalFileName;
+    @Column(name = "name", nullable = false)
+    String name;
 
     @NotNull
-    @Column(name = "unique_file_name", nullable = false, unique = true)
-    String uniqueFileName;
+    @Column(name = "key", nullable = false, unique = true)
+    String key;
 
     @NotNull
     @Column(name = "file_size", nullable = false)
     Long fileSize;
 
-    @NotNull
-    @Column(name = "upload_date", nullable = false)
-    LocalDateTime uploadDate;
+    @Column(name = "content_type")
+    String contentType;
+
+    @Column(name = "path")
+    String path;
+
+    @Column(name = "created_date")
+    LocalDateTime createdDate = LocalDateTime.now();
 }

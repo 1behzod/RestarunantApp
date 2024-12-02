@@ -39,6 +39,12 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
        /* if (!CollectionUtils.isEmpty(filter.getRoles())) {
             sql.append(" and u.role in (:roles) ");
         }*/
+        if (filter.getFromDate() != null) {
+            sql.append(" and u.createdDate >= :fromDate ");
+        }
+        if (filter.getToDate() != null) {
+            sql.append(" and u.createdDate <= :toDate ");
+        }
         if (filter.isSearchNotEmpty()) {
             sql.append(" and (");
             sql.append(" lower(u.name)").append(filter.getLikeSearch());
@@ -82,6 +88,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
             query.setParameter("roles", filter.getRoles());
             countQuery.setParameter("roles", filter.getRoles());
         }*/
+        if (filter.getFromDate() != null) {
+            query.setParameter("fromDate", filter.getFromDate());
+            countQuery.setParameter("fromDate", filter.getFromDate());
+        }
+        if(filter.getToDate()!=null){
+            query.setParameter("toDate", filter.getToDate());
+            countQuery.setParameter("toDate", filter.getToDate());
+        }
         if (filter.isSearchNotEmpty()) {
             query.setParameter("searchKey", filter.getSearchFor());
             countQuery.setParameter("searchKey", filter.getSearchFor());

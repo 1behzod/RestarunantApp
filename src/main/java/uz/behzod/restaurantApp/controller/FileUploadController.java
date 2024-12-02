@@ -3,29 +3,50 @@ package uz.behzod.restaurantApp.controller;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import uz.behzod.restaurantApp.dto.file.FileDTO;
+import uz.behzod.restaurantApp.dto.file.FileListDTO;
+import uz.behzod.restaurantApp.filters.FileFilter;
 import uz.behzod.restaurantApp.service.FileUploadService;
 
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/uploads")
+@RequestMapping("/files")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class FileUploadController {
 
     FileUploadService fileUploadService;
 
-    @PostMapping
-    public ResponseEntity<Long> save(@RequestParam("file") MultipartFile file) throws IOException {
-        return ResponseEntity.ok(fileUploadService.save(file));
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Long> upload(@RequestParam("file") MultipartFile file) throws IOException {
+        return ResponseEntity.ok(fileUploadService.upload(file));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<FileDTO> get(@PathVariable Long id) {
         return ResponseEntity.ok(fileUploadService.get(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        fileUploadService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<FileListDTO>> getList(@ParameterObject FileFilter filter) {
+        return ResponseEntity.ok(fileUploadService.getList(filter));
+    }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<byte[]> download(@PathVariable Long id) throws IOException {
+        return fileUploadService.download(id);
     }
 }
