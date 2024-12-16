@@ -69,7 +69,7 @@ public class BranchService extends BaseService {
         if (branchDto.getAddress() != null) {
             Address address = new Address();
             address.setRegionId(branchDto.getAddress().getRegionId());
-            address.setDistrict(branchDto.getAddress().getDistrictId());
+            address.setDistrictId(branchDto.getAddress().getDistrictId());
             address.setNeighbourhoodId(branchDto.getAddress().getNeighbourhoodId());
             address.setStreet(branchDto.getAddress().getStreet());
             branch.setAddress(address);

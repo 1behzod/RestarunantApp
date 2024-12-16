@@ -38,7 +38,4 @@ public class Address {
     @Column(name = "street")
     String street;
 
-    public void setDistrict(Long districtId) {
-        this.districtId = districtId;
-    }
 }
