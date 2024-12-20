@@ -12,8 +12,8 @@ import uz.behzod.restaurantApp.domain.SimpleEntity;
 @Entity
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "district")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class District extends SimpleEntity {
 
 

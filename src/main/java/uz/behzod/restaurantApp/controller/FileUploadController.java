@@ -17,9 +17,9 @@ import uz.behzod.restaurantApp.service.FileUploadService;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/files")
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@RequestMapping("/v1/files")
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FileUploadController {
 
     FileUploadService fileUploadService;
@@ -34,12 +34,6 @@ public class FileUploadController {
         return ResponseEntity.ok(fileUploadService.get(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        fileUploadService.delete(id);
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping
     public ResponseEntity<Page<FileListDTO>> getList(@ParameterObject FileFilter filter) {
         return ResponseEntity.ok(fileUploadService.getList(filter));
@@ -48,5 +42,11 @@ public class FileUploadController {
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> download(@PathVariable Long id) throws IOException {
         return fileUploadService.download(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        fileUploadService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

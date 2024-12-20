@@ -14,9 +14,9 @@ import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.service.DepartmentService;
 
 @RestController
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-@RequestMapping("/api/departments")
+@RequestMapping("/v1/departments")
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DepartmentController {
 
     DepartmentService departmentService;
@@ -36,15 +36,15 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentService.get(id));
     }
 
+    @GetMapping
+    public ResponseEntity<Page<DepartmentListDTO>> getList(@ParameterObject BaseFilter filter) {
+        return ResponseEntity.ok(departmentService.getList(filter));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         departmentService.delete(id);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping
-    public ResponseEntity<Page<DepartmentListDTO>> getList(@ParameterObject BaseFilter filter) {
-        return ResponseEntity.ok(departmentService.getList(filter));
     }
 
 

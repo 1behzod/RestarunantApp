@@ -12,10 +12,11 @@ import uz.behzod.restaurantApp.domain.SimpleEntity;
 
 import java.time.LocalDateTime;
 
+
+@Entity
 @Getter
 @Setter
 @Table(name = "file_upload")
-@Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FileUpload extends SimpleEntity {
 

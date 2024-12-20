@@ -13,9 +13,9 @@ import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.service.ProductService;
 
 @RestController
-@RequestMapping("/api/products")
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@RequestMapping("/v1/products")
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ProductController {
 
     ProductService productService;
@@ -30,12 +30,6 @@ public class ProductController {
         return ResponseEntity.ok(productService.update(id, productDTO));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        productService.delete(id);
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ProductDetailDTO> get(@PathVariable Long id) {
         return ResponseEntity.ok(productService.get(id));
@@ -44,5 +38,11 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<ProductListDTO>> getList(BaseFilter filter) {
         return ResponseEntity.ok(productService.getList(filter));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        productService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

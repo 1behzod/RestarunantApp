@@ -14,9 +14,9 @@ import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.service.MenuService;
 
 @RestController
-@RequestMapping("/api/menus")
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@RequestMapping("/v1/menus")
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MenuController {
 
     MenuService menuService;
@@ -31,12 +31,6 @@ public class MenuController {
         return ResponseEntity.ok(menuService.update(id, menuDTO));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        menuService.delete(id);
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<MenuDetailDTO> get(@PathVariable Long id) {
         return ResponseEntity.ok(menuService.get(id));
@@ -45,6 +39,12 @@ public class MenuController {
     @GetMapping
     public ResponseEntity<Page<MenuListDTO>> getList(@ParameterObject BaseFilter filter) {
         return ResponseEntity.ok(menuService.getList(filter));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        menuService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
 

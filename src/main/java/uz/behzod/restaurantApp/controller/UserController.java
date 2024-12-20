@@ -15,9 +15,9 @@ import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.service.UserService;
 
 @RestController
-@RequestMapping("/users")
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@RequestMapping("/v1/users")
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserController {
 
     UserService userService;

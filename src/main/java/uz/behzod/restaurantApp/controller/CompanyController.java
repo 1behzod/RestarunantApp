@@ -15,9 +15,9 @@ import uz.behzod.restaurantApp.service.CompanyService;
 
 
 @RestController
-@RequestMapping("/api/companies")
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@RequestMapping("/v1/companies")
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class CompanyController {
 
     CompanyService companyService;

@@ -14,7 +14,7 @@ import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.service.BranchService;
 
 @RestController
-@RequestMapping("/api/branches")
+@RequestMapping("/v1/branches")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class BranchController {

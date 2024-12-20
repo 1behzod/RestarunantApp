@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EntityScan(basePackages = {"uz.behzod.restaurantApp.domain"})
 @EnableJpaRepositories(basePackages = {"uz.behzod.restaurantApp.repository"})
-
 public class DatabaseConfiguration {
 
 }

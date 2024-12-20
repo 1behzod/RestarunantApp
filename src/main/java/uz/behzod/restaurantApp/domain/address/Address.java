@@ -9,9 +9,10 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Embeddable
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Setter
 @Getter
+@Setter
+@FieldDefaults(level = AccessLevel.PRIVATE)
+
 public class Address {
 
     @Column(name = "region_id")
