@@ -21,10 +21,10 @@ import uz.behzod.restaurantApp.repository.MenuRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@RequiredArgsConstructor
 @Slf4j
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Transactional(readOnly = true)
 public class MenuService extends BaseService {
 

@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        cache:
+          use_second_level_cache: true
+          use_query_cache: true
+        show_sql: true
+      #        format_sql: true
+      javax.cache.provider: org.ehcache.jsr107.EhcacheCachingProvider
+      javax.cache.uri: classpath:ehcache.xml
+
+  cache:
+    type: jcache
+    jcache:
+      config: classpath:ehcache.xml
+
+logging:
+  level:
+    org.springframework.cache: DEBUG
+    org.ehcache: DEBUG

@@ -20,10 +20,10 @@ import uz.behzod.restaurantApp.repository.ProductRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Slf4j
 @Transactional(readOnly = true)
 public class ProductService extends BaseService {
 
