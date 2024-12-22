@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import uz.behzod.restaurantApp.constants.CacheConstants;
 import uz.behzod.restaurantApp.domain.auth.User;
 import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.user.UserDTO;
@@ -29,8 +30,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService extends BaseService {
+
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
+    CacheService cacheService;
 
     private void validate(UserDTO userDTO) {
         if (!StringUtils.hasLength(userDTO.getFirstName())) {
@@ -57,16 +60,7 @@ public class UserService extends BaseService {
         if (userDTO.getCompanyId() == null) {
             throw badRequestExceptionThrow("CompanyId is required").get();
         }
-       /* if (userDTO.getId() == null) {
-            if (userRepository.findByUsernameAndDeletedIsFalse((userDTO.getUsername()))) {
-                throw new RuntimeException("Username already exists");
-            }
-        }
-        if (userDTO.getId() != null) {
-            if (userRepository.findByUsernameAndDeletedIsFalseAndIdNot(userDTO.getUsername(), userDTO.getId())) {
-                throw new RuntimeException("Username already exists");
-            }
-        }*/
+
 
     }
 
@@ -84,7 +78,9 @@ public class UserService extends BaseService {
         user.setDepartmentId(userDTO.getDepartmentId());
         user.setPositionId(userDTO.getPositionId());
         user.setCompanyId(userDTO.getCompanyId());
-        return userRepository.save(user).getId();
+        userRepository.save(user);
+        cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
+        return user.getId();
     }
 
     @Transactional
@@ -99,16 +95,29 @@ public class UserService extends BaseService {
             user.setPositionId(userDTO.getPositionId());
             user.setDepartmentId(userDTO.getDepartmentId());
             user.setBranchId(userDTO.getBranchId());
-            return userRepository.save(user).getId();
+            userRepository.save(user);
+            cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
+            return user.getId();
         }).orElseThrow(notFoundExceptionThrow("User not found with id: " + id));
     }
 
-    @Transactional
+/*    @Transactional
     public void delete(Long id) {
         if (!userRepository.existsById(id)) {
             throw (notFoundExceptionThrow("User not found")).get();
         }
         userRepository.deleteById(id);
+    }*/
+
+    @Transactional
+    public void delete(Long id) {
+        userRepository.findById(id)
+                .map(user -> {
+                    user.setStatus(UserStatus.IN_ACTIVE);
+                    userRepository.deleteById(id);
+                    cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
+                    return user;
+                }).orElseThrow(notFoundExceptionThrow("User not found with id: " + id));
     }
 
     public UserDetailDTO get(Long id) {
@@ -160,7 +169,8 @@ public class UserService extends BaseService {
                 .map(user -> {
                     user.setStatus(status);
                     userRepository.save(user);
-                    return user;
+                    cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
+                    return user.getId();
                 })
                 .orElseThrow(notFoundExceptionThrow("User not found with id: " + id));
     }

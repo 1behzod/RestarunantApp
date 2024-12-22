@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.SQLDelete;
 import uz.behzod.restaurantApp.constants.Constants;
 import uz.behzod.restaurantApp.domain.Department;
@@ -24,6 +25,7 @@ import uz.behzod.restaurantApp.enums.UserStatus;
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SQLDelete(sql = "UPDATE users SET deleted = 'true' WHERE id=?")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends SimpleEntity {
 
     @Size(max = 40)
