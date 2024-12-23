@@ -15,6 +15,7 @@ import uz.behzod.restaurantApp.domain.address.Neighbourhood;
 import uz.behzod.restaurantApp.domain.address.Region;
 import uz.behzod.restaurantApp.domain.auth.User;
 import uz.behzod.restaurantApp.domain.company.Company;
+import uz.behzod.restaurantApp.domain.menu.Menu;
 import uz.behzod.restaurantApp.domain.unit.Unit;
 
 
@@ -50,6 +51,7 @@ public class CacheConfiguration implements CacheConstants {
             createCache(cacheManager, Neighbourhood.class.getName(), 3600, 100);
             createCache(cacheManager, Company.class.getName(), 3600, 100);
             createCache(cacheManager, Unit.class.getName(), 3600, 100);
+            createCache(cacheManager, Menu.class.getName(), 3600, 100);
 
         };
     }

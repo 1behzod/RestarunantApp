@@ -10,7 +10,4 @@ public class RestaurantAppApplication {
         SpringApplication.run(RestaurantAppApplication.class, args);
     }
 
-    //1 CacheConstants
-    //2 CacheConfig
-    //User service -> 1.create() 2.update() 3.delete() 4.updateStatus()
 }

@@ -44,7 +44,6 @@ public class CacheService {
                 log.error("Clear cache {} error {} :", cacheName, e.getMessage());
             }
         });
-
     }
 
     public void evict(String cacheName, String key) {
@@ -53,8 +52,4 @@ public class CacheService {
             cache.evict(key);
         }
     }
-
-    //TODO 2 methods, CacheController, USER_LOGIN_CACHE
-
-
 }

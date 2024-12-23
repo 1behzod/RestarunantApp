@@ -10,7 +10,7 @@ spring:
     properties:
       hibernate:
         cache:
-          use_second_level_cache: true
+          use_second_level_cache: false
           use_query_cache: true
         show_sql: true
       #        format_sql: true
@@ -19,10 +19,10 @@ spring:
 
   cache:
     type: jcache
-    jcache:
-      config: classpath:ehcache.xml
+#    jcache:
+#      config: classpath:uz.behzod.restaurantApp.config.CacheConfiguration
 
 logging:
   level:
-    org.springframework.cache: DEBUG
-    org.ehcache: DEBUG
+    org.springframework.cache: INFO
+    org.ehcache: INFO

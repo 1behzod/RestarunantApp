@@ -47,7 +47,6 @@ public class MenuService extends BaseService {
                 throw conflictExceptionThrow("Menu name already exists").get();
             }
         }
-        //TODO current branch bilan tekshirish kere, har hil branchda bir hil menu yaratib bolmadi
     }
 
     @Transactional

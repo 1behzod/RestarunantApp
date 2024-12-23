@@ -23,7 +23,7 @@ public class District extends SimpleEntity {
     @Column(name = "region_id")
     Long regionId;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "region_id", insertable = false, updatable = false)
     Region region;
 

@@ -3,21 +3,10 @@
         xmlns="http://www.ehcache.org/v3"
         xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core.xsd">
 
-    <cache alias="com.example.demo.domain.Category">
+    <cache alias="default">
         <expiry>
-            <ttl unit="seconds">3600</ttl>
+            <ttl unit="seconds">600</ttl>
         </expiry>
-        <resources>
-            <heap unit="entries">1000</heap>
-        </resources>
-    </cache>
 
-    <cache alias="com.example.demo.domain.Product">
-        <expiry>
-            <ttl unit="seconds">3600</ttl>
-        </expiry>
-        <resources>
-            <heap unit="entries">100</heap>
-        </resources>
     </cache>
 </config>
