@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class OpenApiConfiguration {
 
-
     @Bean
     public OpenAPI openAPI() {
         OpenAPI openAPI = new OpenAPI();

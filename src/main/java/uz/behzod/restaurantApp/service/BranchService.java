@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import uz.behzod.restaurantApp.constants.MessageKeys;
 import uz.behzod.restaurantApp.domain.address.Address;
 import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.dto.address.AddressDetailDTO;
@@ -31,29 +32,24 @@ import java.util.stream.Collectors;
 public class BranchService extends BaseService {
 
     BranchRepository branchRepository;
+    private final LocalizationService localizationService;
 
     public void validate(BranchDTO branchDTO) {
 
         if (!StringUtils.hasLength(branchDTO.getName())) {
-            throw badRequestExceptionThrow("Name field is required").get();
+            throw badRequestExceptionThrow(localizationService.localize(MessageKeys.GENERAL_BAD_REQUEST)).get();
         }
         if (branchDTO.getCompanyId() == null) {
-            throw badRequestExceptionThrow("Company is required").get();
+            throw badRequestExceptionThrow(localizationService.localize(MessageKeys.GENERAL_BAD_REQUEST)).get();
         }
-       /* if (branchDto.getAddress() == null) {
-            throw new RuntimeException("Address is required");
-        }*/
-        /*if (branchDto.getId() != null && branchRepository.existsByNameIgnoreCaseAndCompanyId(branchDto.getName(), branchDto.getCompanyId())) {
-            throw new RuntimeException("Branch exists by this name: " + branchDto.getName());
-        }*/
 
         if (branchDTO.getId() == null) {
             if (branchRepository.existsByNameIgnoreCaseAndCompanyId(branchDTO.getName(), branchDTO.getCompanyId())) {
-                throw conflictExceptionThrow("Branch already exists by this name: " + branchDTO.getName()).get();
+                throw conflictExceptionThrow(localizationService.localize(MessageKeys.ENTITY_ALREADY_EXISTS_FIELD , branchDTO.getName())).get();
             }
         } else {
             if (branchRepository.existsByNameIgnoreCaseAndCompanyIdAndIdNot(branchDTO.getName(), branchDTO.getCompanyId(), branchDTO.getId())) {
-                throw conflictExceptionThrow("Branch already exists by this name: " + branchDTO.getName()).get();
+                throw conflictExceptionThrow(localizationService.localize(MessageKeys.ENTITY_ALREADY_EXISTS_FIELD , branchDTO.getName())).get();
             }
         }
     }

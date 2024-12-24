@@ -26,5 +26,6 @@ public class RegionController {
     @GetMapping
     public ResponseEntity<List<Region>> getList() {
         return ResponseEntity.ok(regionService.getList());
+
     }
 }

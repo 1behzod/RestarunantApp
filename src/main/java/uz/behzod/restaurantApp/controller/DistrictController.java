@@ -21,12 +21,13 @@ public class DistrictController {
 
     DistrictService districtService;
 
-    //@Cacheable(cacheNames = CacheConstants.DISTRICT_BY_DISTRICT_ID)
+    @Cacheable(cacheNames = CacheConstants.DISTRICT_BY_DISTRICT_ID)
     @GetMapping
     public ResponseEntity<List<District>> getList() {
         return ResponseEntity.ok(districtService.getList());
     }
 
+    @Cacheable(cacheNames = CacheConstants.DISTRICT_BY_REGION_ID)
     @GetMapping("/{id}")
     public ResponseEntity<List<District>> getListByRegionId(@PathVariable Long id) {
         return ResponseEntity.ok(districtService.getListByRegionId(id));

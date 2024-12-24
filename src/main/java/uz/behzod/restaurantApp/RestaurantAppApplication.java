@@ -10,4 +10,9 @@ public class RestaurantAppApplication {
         SpringApplication.run(RestaurantAppApplication.class, args);
     }
 
+    //Build-in classes
+    //ResourceBundle
+    //Locale
+    //MessageFormat
+
 }
