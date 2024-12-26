@@ -32,24 +32,24 @@ import java.util.stream.Collectors;
 public class BranchService extends BaseService {
 
     BranchRepository branchRepository;
-    private final LocalizationService localizationService;
+    LocalizationService localizationService;
 
     public void validate(BranchDTO branchDTO) {
 
         if (!StringUtils.hasLength(branchDTO.getName())) {
-            throw badRequestExceptionThrow(localizationService.localize(MessageKeys.GENERAL_BAD_REQUEST)).get();
+            throw badRequestExceptionThrow((MessageKeys.GENERAL_BAD_REQUEST)).get();
         }
         if (branchDTO.getCompanyId() == null) {
-            throw badRequestExceptionThrow(localizationService.localize(MessageKeys.GENERAL_BAD_REQUEST)).get();
+            throw badRequestExceptionThrow((MessageKeys.GENERAL_BAD_REQUEST)).get();
         }
 
         if (branchDTO.getId() == null) {
             if (branchRepository.existsByNameIgnoreCaseAndCompanyId(branchDTO.getName(), branchDTO.getCompanyId())) {
-                throw conflictExceptionThrow(localizationService.localize(MessageKeys.ENTITY_ALREADY_EXISTS_FIELD , branchDTO.getName())).get();
+                throw conflictExceptionThrow((MessageKeys.ENTITY_ALREADY_EXISTS_FIELD)).get();
             }
         } else {
             if (branchRepository.existsByNameIgnoreCaseAndCompanyIdAndIdNot(branchDTO.getName(), branchDTO.getCompanyId(), branchDTO.getId())) {
-                throw conflictExceptionThrow(localizationService.localize(MessageKeys.ENTITY_ALREADY_EXISTS_FIELD , branchDTO.getName())).get();
+                throw conflictExceptionThrow((MessageKeys.ENTITY_ALREADY_EXISTS_FIELD)).get();
             }
         }
     }
@@ -76,7 +76,7 @@ public class BranchService extends BaseService {
     @Transactional
     public Long update(Long id, BranchDTO branchDto) {
         Branch branch = branchRepository.findById(id)
-                .orElseThrow(notFoundExceptionThrow("Branch not found"));
+                .orElseThrow(notFoundExceptionThrow(Branch.class.getSimpleName(), "id", id));
         branchDto.setId(id);
         this.validate(branchDto);
         branch.setName(branchDto.getName());
@@ -96,7 +96,7 @@ public class BranchService extends BaseService {
     @Transactional
     public void delete(Long id) {
         if (!branchRepository.existsById(id)) {
-            throw notFoundExceptionThrow("Branch not found with id: " + id).get();
+            throw notFoundExceptionThrow(MessageKeys.ENTITY_NOT_FOUND_FIELD).get();
         }
         branchRepository.deleteById(id);
     }
@@ -117,7 +117,7 @@ public class BranchService extends BaseService {
                 branchDetailDto.setAddress(addressDetailDTO);
             }
             return branchDetailDto;
-        }).orElseThrow(notFoundExceptionThrow("Branch not found"));
+        }).orElseThrow(notFoundExceptionThrow(MessageKeys.ENTITY_NOT_FOUND_FIELD));
     }
 
     public Page<BranchListDTO> getList(BaseFilter filter) {
