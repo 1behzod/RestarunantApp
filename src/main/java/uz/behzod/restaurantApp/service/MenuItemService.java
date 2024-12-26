@@ -31,21 +31,20 @@ public class MenuItemService extends BaseService {
 
     private void validate(MenuItemDTO menuItemDTO) {
         if (!StringUtils.hasLength(menuItemDTO.getName())) {
-            throw badRequestExceptionThrow("Item name is required").get();
+            throw badRequestExceptionThrow(REQUIRED, NAME).get();
         }
         if (menuItemDTO.getMenuId() == null) {
-            throw badRequestExceptionThrow("Menu id is required").get();
+            throw badRequestExceptionThrow(REQUIRED, MENU).get();
         }
         if (menuItemDTO.getPrice() == null) {
-            throw badRequestExceptionThrow("Item price is required").get();
+            throw badRequestExceptionThrow(REQUIRED, PRICE).get();
         }
         if (menuItemDTO.getProductId() == null) {
-            throw badRequestExceptionThrow("Item product is required").get();
+            throw badRequestExceptionThrow(REQUIRED, PRODUCT).get();
         }
         if (menuItemDTO.getUnitId() == null) {
-            throw badRequestExceptionThrow("Item unit is required").get();
+            throw badRequestExceptionThrow(REQUIRED, UNIT).get();
         }
-        //TODO validation for product and unit
 
     }
 
@@ -63,7 +62,7 @@ public class MenuItemService extends BaseService {
 
     @Transactional
     public Long update(Long id, MenuItemDTO menuItemDTO) {
-        MenuItem menuItem = menuItemRepository.findById(id).orElseThrow(notFoundExceptionThrow("Menu item not found"));
+        MenuItem menuItem = menuItemRepository.findById(id).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, MENU_ITEM));
         menuItemDTO.setId(id);
         this.validate(menuItemDTO);
 
@@ -78,7 +77,7 @@ public class MenuItemService extends BaseService {
     @Transactional
     public void delete(Long id) {
         if (!menuItemRepository.existsById(id)) {
-            throw notFoundExceptionThrow("Menu item not found").get();
+            throw notFoundExceptionThrow(ENTITY_NOT_FOUND, MENU_ITEM).get();
         }
         menuItemRepository.deleteById(id);
     }
@@ -92,7 +91,7 @@ public class MenuItemService extends BaseService {
             //  menuItemDetailDTO.setUnit(menuItem.getUnit().toCommonDTO());
             return menuItemDetailDTO;
 
-        }).orElseThrow(notFoundExceptionThrow("Menu item not found"));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, MENU_ITEM));
     }
 
     public Page<MenuItemListDTO> getList(BaseFilter filter) {

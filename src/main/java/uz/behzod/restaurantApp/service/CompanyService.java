@@ -36,28 +36,28 @@ public class CompanyService extends BaseService {
 
     private void validate(CompanyDTO companyDTO) {
         if (!StringUtils.hasLength(companyDTO.getName())) {
-             throw badRequestExceptionThrow("Company name is required").get();
+            throw badRequestExceptionThrow(REQUIRED, NAME).get();
         }
         if (!StringUtils.hasLength(companyDTO.getTin())) {
-            throw badRequestExceptionThrow("Company TIN is required").get();
+            throw badRequestExceptionThrow(REQUIRED, TIN).get();
         }
         if (!StringUtils.hasLength(companyDTO.getPinfl())) {
-            throw badRequestExceptionThrow("Company PINFL is required").get();
+            throw badRequestExceptionThrow(REQUIRED, PINFL).get();
         }
         if (companyDTO.getId() == null) {
             if (companyRepository.existsByTin(companyDTO.getTin())) {
-                throw conflictExceptionThrow("Company exists with TIN:" + companyDTO.getTin()).get();
+                throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, COMPANY, TIN, companyDTO.getTin()).get();
             }
             if (companyRepository.existsByPinfl(companyDTO.getPinfl())) {
-                throw conflictExceptionThrow("Company exists with PINFL:" + companyDTO.getPinfl()).get();
+                throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, COMPANY, PINFL, companyDTO.getPinfl()).get();
             }
         }
         if (companyDTO.getId() != null) {
             if (companyRepository.existsByTinAndIdNot(companyDTO.getTin(), companyDTO.getId())) {
-                throw conflictExceptionThrow("Company exists with TIN:" + companyDTO.getTin()).get();
+                throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, COMPANY, TIN, companyDTO.getTin()).get();
             }
             if (companyRepository.existsByPinflAndIdNot(companyDTO.getPinfl(), companyDTO.getId())) {
-                throw conflictExceptionThrow("Company exists with PINFL:" + companyDTO.getPinfl()).get();
+                throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, COMPANY, PINFL, companyDTO.getPinfl()).get();
             }
         }
     }
@@ -84,7 +84,7 @@ public class CompanyService extends BaseService {
 
     @Transactional
     public Long update(Long id, CompanyDTO companyDTO) {
-        Company company = companyRepository.findById(id).orElseThrow(notFoundExceptionThrow("Company not found"));
+        Company company = companyRepository.findById(id).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, COMPANY));
         companyDTO.setId(id);
         this.validate(companyDTO);
 
@@ -106,7 +106,7 @@ public class CompanyService extends BaseService {
     @Transactional
     public void delete(Long id) {
         if (!companyRepository.existsById(id)) {
-            throw notFoundExceptionThrow("Company not found with id: " + id).get();
+            throw notFoundExceptionThrow(ENTITY_NOT_FOUND, COMPANY).get();
         }
         companyRepository.deleteById(id);
     }
@@ -129,31 +129,27 @@ public class CompanyService extends BaseService {
                 companyDetailDTO.setAddress(addressDetailDTO);
             }
             return companyDetailDTO;
-        }).orElseThrow(notFoundExceptionThrow("Company not found"));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, COMPANY));
     }
 
 
     public Page<CompanyListDTO> getList(BaseFilter filter) {
         ResultList<Company> resultList = companyRepository.getResultList(filter);
-        List<CompanyListDTO> result = resultList
-                .getList()
-                .stream()
-                .map(company -> {
-                    CompanyListDTO companyListDTO = new CompanyListDTO();
-                    companyListDTO.setId(company.getId());
-                    companyListDTO.setName(company.getName());
-                    companyListDTO.setTin(company.getTin());
-                    companyListDTO.setPinfl(company.getPinfl());
-                    if (company.getAddress() != null) {
-                        AddressListDTO addressListDTO = new AddressListDTO();
-                        addressListDTO.setRegion(company.getAddress().getRegion().toCommonDTO());
-                        addressListDTO.setDistrict(company.getAddress().getDistrict().toCommonDTO());
-                        addressListDTO.setNeighbourhood(company.getAddress().getNeighbourhood().toCommonDTO());
-                        companyListDTO.setAddress(addressListDTO);
-                    }
-                    return companyListDTO;
-                })
-                .collect(Collectors.toList());
+        List<CompanyListDTO> result = resultList.getList().stream().map(company -> {
+            CompanyListDTO companyListDTO = new CompanyListDTO();
+            companyListDTO.setId(company.getId());
+            companyListDTO.setName(company.getName());
+            companyListDTO.setTin(company.getTin());
+            companyListDTO.setPinfl(company.getPinfl());
+            if (company.getAddress() != null) {
+                AddressListDTO addressListDTO = new AddressListDTO();
+                addressListDTO.setRegion(company.getAddress().getRegion().toCommonDTO());
+                addressListDTO.setDistrict(company.getAddress().getDistrict().toCommonDTO());
+                addressListDTO.setNeighbourhood(company.getAddress().getNeighbourhood().toCommonDTO());
+                companyListDTO.setAddress(addressListDTO);
+            }
+            return companyListDTO;
+        }).collect(Collectors.toList());
         return new PageImpl<>(result, filter.getOrderedPageable(), resultList.getCount());
     }
 }

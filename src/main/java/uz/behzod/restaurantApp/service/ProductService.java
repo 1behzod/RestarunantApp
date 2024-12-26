@@ -31,17 +31,14 @@ public class ProductService extends BaseService {
 
     public void validate(ProductDTO productDTO) {
         if (!StringUtils.hasLength(productDTO.getName())) {
-            throw badRequestExceptionThrow("Product name is required").get();
+            throw badRequestExceptionThrow(REQUIRED, NAME).get();
         }
         if (productDTO.getDepartmentId() == null) {
-            throw badRequestExceptionThrow("Department id is required").get();
+            throw badRequestExceptionThrow(REQUIRED, DEPARTMENT).get();
         }
         if (productDTO.getBarcode() == null) {
-            throw badRequestExceptionThrow("Barcode is required").get();
+            throw badRequestExceptionThrow(REQUIRED, BARCODE).get();
         }
-       /* if (productDTO.getUnitId() == null) {
-            throw new RuntimeException("Unit id is required");
-        }*/
     }
 
 
@@ -62,7 +59,7 @@ public class ProductService extends BaseService {
 
     @Transactional
     public Long update(Long id, ProductDTO productDTO) {
-        Product product = productRepository.findById(id).orElseThrow(notFoundExceptionThrow("Product not found"));
+        Product product = productRepository.findById(id).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, PRODUCT));
         product.setId(id);
         this.validate(productDTO);
 
@@ -79,7 +76,7 @@ public class ProductService extends BaseService {
     @Transactional
     public void delete(Long id) {
         if (!productRepository.existsById(id)) {
-            throw notFoundExceptionThrow("Product not found").get();
+            throw notFoundExceptionThrow(ENTITY_NOT_FOUND, PRODUCT).get();
         }
         productRepository.deleteById(id);
     }
@@ -98,7 +95,7 @@ public class ProductService extends BaseService {
             }
             return productDetailDTO;
 
-        }).orElseThrow(notFoundExceptionThrow("Product not found"));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, PRODUCT));
     }
 
 

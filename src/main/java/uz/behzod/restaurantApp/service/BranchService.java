@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import uz.behzod.restaurantApp.constants.MessageKeys;
+import uz.behzod.restaurantApp.constants.MessageConstants;
 import uz.behzod.restaurantApp.domain.address.Address;
 import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.dto.address.AddressDetailDTO;
@@ -32,24 +32,23 @@ import java.util.stream.Collectors;
 public class BranchService extends BaseService {
 
     BranchRepository branchRepository;
-    LocalizationService localizationService;
 
     public void validate(BranchDTO branchDTO) {
 
         if (!StringUtils.hasLength(branchDTO.getName())) {
-            throw badRequestExceptionThrow((MessageKeys.GENERAL_BAD_REQUEST)).get();
+            throw badRequestExceptionThrow(REQUIRED, NAME).get();
         }
         if (branchDTO.getCompanyId() == null) {
-            throw badRequestExceptionThrow((MessageKeys.GENERAL_BAD_REQUEST)).get();
+            throw badRequestExceptionThrow(REQUIRED, COMPANY).get();
         }
 
         if (branchDTO.getId() == null) {
             if (branchRepository.existsByNameIgnoreCaseAndCompanyId(branchDTO.getName(), branchDTO.getCompanyId())) {
-                throw conflictExceptionThrow((MessageKeys.ENTITY_ALREADY_EXISTS_FIELD)).get();
+                throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, BRANCH, NAME, branchDTO.getName()).get();
             }
         } else {
             if (branchRepository.existsByNameIgnoreCaseAndCompanyIdAndIdNot(branchDTO.getName(), branchDTO.getCompanyId(), branchDTO.getId())) {
-                throw conflictExceptionThrow((MessageKeys.ENTITY_ALREADY_EXISTS_FIELD)).get();
+                throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, BRANCH, NAME,  branchDTO.getName()).get();
             }
         }
     }
@@ -76,7 +75,7 @@ public class BranchService extends BaseService {
     @Transactional
     public Long update(Long id, BranchDTO branchDto) {
         Branch branch = branchRepository.findById(id)
-                .orElseThrow(notFoundExceptionThrow(Branch.class.getSimpleName(), "id", id));
+                .orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, BRANCH));
         branchDto.setId(id);
         this.validate(branchDto);
         branch.setName(branchDto.getName());
@@ -96,7 +95,7 @@ public class BranchService extends BaseService {
     @Transactional
     public void delete(Long id) {
         if (!branchRepository.existsById(id)) {
-            throw notFoundExceptionThrow(MessageKeys.ENTITY_NOT_FOUND_FIELD).get();
+            throw notFoundExceptionThrow(ENTITY_NOT_FOUND, BRANCH).get();
         }
         branchRepository.deleteById(id);
     }
@@ -117,7 +116,7 @@ public class BranchService extends BaseService {
                 branchDetailDto.setAddress(addressDetailDTO);
             }
             return branchDetailDto;
-        }).orElseThrow(notFoundExceptionThrow(MessageKeys.ENTITY_NOT_FOUND_FIELD));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, BRANCH));
     }
 
     public Page<BranchListDTO> getList(BaseFilter filter) {
@@ -143,4 +142,6 @@ public class BranchService extends BaseService {
     }
 
 
+    //            throw badRequestExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, BRANCH, NAME, "Test").get();
+   //            throw badRequestExceptionThrow(ENTITY_ALREADY_EXISTS, BRANCH).get();
 }

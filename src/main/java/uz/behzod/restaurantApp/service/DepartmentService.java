@@ -32,23 +32,19 @@ public class DepartmentService extends BaseService {
 
     private void validate(DepartmentDTO departmentDTO) {
         if (!StringUtils.hasLength(departmentDTO.getName())) {
-            throw badRequestExceptionThrow("Department name is required").get();
+            throw badRequestExceptionThrow(REQUIRED, NAME).get();
         }
         if (departmentDTO.getBranchId() == null) {
-            throw badRequestExceptionThrow("Branch is required").get();
+            throw badRequestExceptionThrow(REQUIRED, BRANCH).get();
         }
-            /*if (departmentDTO.getId() != null && departmentRepository.existsByNameIgnoreCaseAndBranchId( departmentDTO.getName(), departmentDTO.getId())) {
-                throw new RuntimeException("Department exists with name " + departmentDTO.getName());
-            }*/
-
         if (departmentDTO.getId() == null) {
             if (departmentRepository.existsByNameIgnoreCaseAndBranchId(departmentDTO.getName(), departmentDTO.getBranchId())) {
-                throw conflictExceptionThrow("Department already exists with name " + departmentDTO.getName()).get();
+                throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, DEPARTMENT, NAME, departmentDTO.getName()).get();
             }
         } else {
             if (departmentRepository.existsByNameIgnoreCaseAndBranchIdAndIdNot(
                     departmentDTO.getName(), departmentDTO.getBranchId(), departmentDTO.getId())) {
-                throw conflictExceptionThrow("Department already exists with name " + departmentDTO.getName()).get();
+                throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, DEPARTMENT, NAME, departmentDTO.getName()).get();
             }
         }
     }
@@ -64,7 +60,7 @@ public class DepartmentService extends BaseService {
 
     @Transactional
     public Long update(DepartmentDTO departmentDTO, Long id) {
-        Department department = departmentRepository.findById(id).orElseThrow(notFoundExceptionThrow("Department not found"));
+        Department department = departmentRepository.findById(id).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, DEPARTMENT));
         department.setId(id);
         this.validate(departmentDTO);
 
@@ -76,7 +72,7 @@ public class DepartmentService extends BaseService {
     @Transactional
     public void delete(Long id) {
         if (!departmentRepository.existsById(id)) {
-            throw notFoundExceptionThrow("Department not found with id: " + id).get();
+            throw notFoundExceptionThrow(ENTITY_NOT_FOUND, DEPARTMENT).get();
         }
         departmentRepository.deleteById(id);
     }
@@ -88,7 +84,7 @@ public class DepartmentService extends BaseService {
             departmentDetailDto.setName(department.getName());
             departmentDetailDto.setBranch(department.getBranch().toCommonDTO());
             return departmentDetailDto;
-        }).orElseThrow(notFoundExceptionThrow("Department not found"));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, DEPARTMENT));
     }
 
     public Page<DepartmentListDTO> getList(BaseFilter filter) {

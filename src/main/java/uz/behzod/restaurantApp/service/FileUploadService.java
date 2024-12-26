@@ -58,13 +58,13 @@ public class FileUploadService extends BaseService {
 
     @Transactional
     public void delete(Long id) {
-        FileUpload fileUpload = fileUploadRepository.findById(id).orElseThrow(() -> notFoundExceptionThrow(FileUpload.class.getSimpleName()).get());
+        FileUpload fileUpload = fileUploadRepository.findById(id).orElseThrow(() -> notFoundExceptionThrow(ENTITY_NOT_FOUND, FILE).get());
         File file = new File(fileUpload.getPath());
         if (file.exists()) {
             file.delete();
             fileUploadRepository.deleteById(id);
         } else {
-            throw notFoundExceptionThrow(FileUpload.class.getSimpleName()).get();
+            throw notFoundExceptionThrow(ENTITY_NOT_FOUND, FILE).get();
         }
     }
 
@@ -78,7 +78,7 @@ public class FileUploadService extends BaseService {
                     fileDTO.setContentType(fileUpload.getContentType());
                     fileDTO.setPath(fileUpload.getPath());
                     return fileDTO;
-                }).orElseThrow(() -> notFoundExceptionThrow(FileUpload.class.getSimpleName()).get());
+                }).orElseThrow(() -> notFoundExceptionThrow(ENTITY_NOT_FOUND, FILE).get());
     }
 
     public Page<FileListDTO> getList(FileFilter filter) {
@@ -100,10 +100,10 @@ public class FileUploadService extends BaseService {
     }
 
     public ResponseEntity<byte[]> download(Long id) throws IOException {
-        FileUpload fileUpload = fileUploadRepository.findById(id).orElseThrow();
+        FileUpload fileUpload = fileUploadRepository.findById(id).orElseThrow(() -> notFoundExceptionThrow(ENTITY_NOT_FOUND, FILE).get());
         Path path = Paths.get(fileUpload.getPath());
         if (!Files.exists(path)) {
-            throw notFoundExceptionThrow(FileUpload.class.getSimpleName()).get();
+            throw notFoundExceptionThrow(ENTITY_NOT_FOUND, FILE).get();
         }
 
         byte[] fileContent = Files.readAllBytes(path);

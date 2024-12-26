@@ -32,19 +32,19 @@ public class MenuService extends BaseService {
 
     private void validate(MenuDTO menuDTO) {
         if (!StringUtils.hasLength(menuDTO.getName())) {
-            throw badRequestExceptionThrow("Menu name is required").get();
+            throw badRequestExceptionThrow(REQUIRED, NAME).get();
         }
         if (menuDTO.getBranchId() == null) {
-            throw badRequestExceptionThrow("Menu branch id cannot be empty").get();
+            throw badRequestExceptionThrow(REQUIRED, BRANCH).get();
         }
         if (menuDTO.getId() == null) {
             if (menuRepository.existsByNameAndBranchIdAndDeletedIsFalse(menuDTO.getName(), menuDTO.getBranchId())) {
-                throw conflictExceptionThrow("Menu name already exists").get();
+                throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, MENU, NAME, menuDTO.getName()).get();
             }
         }
         if (menuDTO.getId() != null) {
             if (menuRepository.existsByNameAndBranchIdAndDeletedIsFalseAndIdNot(menuDTO.getName(), menuDTO.getBranchId(), menuDTO.getId())) {
-                throw conflictExceptionThrow("Menu name already exists").get();
+                throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, MENU, NAME, menuDTO.getName()).get();
             }
         }
     }
@@ -60,7 +60,7 @@ public class MenuService extends BaseService {
 
     @Transactional
     public Long update(Long id, MenuDTO menuDTO) {
-        Menu menu = menuRepository.findById(id).orElseThrow(notFoundExceptionThrow("Menu not found"));
+        Menu menu = menuRepository.findById(id).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, MENU));
         menu.setId(id);
         this.validate(menuDTO);
 
@@ -73,7 +73,7 @@ public class MenuService extends BaseService {
     @Transactional
     public void delete(Long id) {
         if (!menuRepository.existsById(id)) {
-            throw notFoundExceptionThrow("Menu not found").get();
+            throw notFoundExceptionThrow(ENTITY_NOT_FOUND, MENU).get();
         }
         menuRepository.deleteById(id);
     }
@@ -86,7 +86,7 @@ public class MenuService extends BaseService {
             menuDetailDTO.setName(menu.getName());
             menuDetailDTO.setBranch(menu.getBranch().toCommonDTO());
             return menuDetailDTO;
-        }).orElseThrow(notFoundExceptionThrow("Menu not found"));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, MENU));
     }
 
 

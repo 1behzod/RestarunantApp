@@ -1,87 +1,61 @@
 package uz.behzod.restaurantApp.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Component;
+import uz.behzod.restaurantApp.constants.MessageConstants;
 import uz.behzod.restaurantApp.errors.BadRequestException;
 import uz.behzod.restaurantApp.errors.ConflictException;
 import uz.behzod.restaurantApp.errors.NotFoundException;
 import uz.behzod.restaurantApp.errors.UnauthorizedException;
 import uz.behzod.restaurantApp.util.BeanUtils;
 
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @Component
 @Slf4j
-public class BaseService {
+public class BaseService implements MessageConstants {
 
 
-    protected static Supplier<NotFoundException> notFoundExceptionThrow(String message) {
+    protected static Supplier<NotFoundException> notFoundExceptionThrow(String code) {
         LocalizationService localizationService = BeanUtils.getBean(LocalizationService.class);
+        return () -> new NotFoundException(localizationService.localize(code));
 
-        return () -> new NotFoundException(
-                BeanUtils
-                        .getBean(LocalizationService.class)
-                        .localize("exception.{entity}.not_found", new Object[]{message}, localizationService)
-        );
     }
 
-    protected static Supplier<NotFoundException> notFoundExceptionThrow(String entityName, String param, Object value) {
+    protected static Supplier<NotFoundException> notFoundExceptionThrow(String code, String... params) {
         LocalizationService localizationService = BeanUtils.getBean(LocalizationService.class);
-        return () ->
-                new NotFoundException(
-                        BeanUtils
-                                .getBean(LocalizationService.class)
-                                .localize("entity.not.found", new Object[]{localizationService.localize(entityName, entityName)})
-                );
+        List<String> localizedParams = Stream.of(params).map(localizationService::localize).toList();
+        return () -> new NotFoundException(localizationService.localize(code, localizedParams.toArray()));
     }
 
-    protected static Supplier<BadRequestException> badRequestExceptionThrow(String message) {
+    protected static Supplier<BadRequestException> badRequestExceptionThrow(String code) {
         LocalizationService localizationService = BeanUtils.getBean(LocalizationService.class);
-
-        return () -> new BadRequestException(
-                BeanUtils
-                        .getBean(LocalizationService.class)
-                        .localize("exception.bad_request", new Object[]{message}, localizationService)
-
-        );
+        return () -> new BadRequestException(localizationService.localize(code));
     }
 
-    protected static Supplier<BadRequestException> badRequestExceptionThrow(String entityName, String param, Object value) {
+    protected static Supplier<BadRequestException> badRequestExceptionThrow(String code, String... params) {
         LocalizationService localizationService = BeanUtils.getBean(LocalizationService.class);
-
-        return () -> new BadRequestException(
-                BeanUtils
-                        .getBean(LocalizationService.class)
-                        .localize("exception.bad_request", new Object[]{localizationService.localize(entityName, entityName)})
-
-        );
+        List<String> localizedParams = Stream.of(params).map(localizationService::localize).toList();
+        return () -> new BadRequestException(localizationService.localize(code, localizedParams.toArray()));
     }
 
-    protected static Supplier<ConflictException> conflictExceptionThrow(String message) {
+    protected static Supplier<ConflictException> conflictExceptionThrow(String code) {
         LocalizationService localizationService = BeanUtils.getBean(LocalizationService.class);
-        return () -> new ConflictException(
-                BeanUtils
-                        .getBean(LocalizationService.class)
-                        .localize("exception.conflict", new Object[]{message}, localizationService)
-        );
+        return () -> new ConflictException(localizationService.localize(code));
     }
 
 
-    protected static Supplier<ConflictException> conflictExceptionThrow(String entityName, String param, Object value) {
+    protected static Supplier<ConflictException> conflictExceptionThrow(String code, String... params) {
         LocalizationService localizationService = BeanUtils.getBean(LocalizationService.class);
-        return () -> new ConflictException(
-                BeanUtils
-                        .getBean(LocalizationService.class)
-                        .localize("exception.conflict", new Object[]{localizationService.localize(entityName, entityName)})
-        );
+        List<String> localizedParams = Stream.of(params).map(localizationService::localize).toList();
+        return () -> new ConflictException(localizationService.localize(code, localizedParams.toArray()));
+
     }
 
-    protected static Supplier<UnauthorizedException> unauthorizedExceptionThrow(String message) {
-        LocalizationService localizationService = BeanUtils.getBean(LocalizationService.class);
-        return () -> new UnauthorizedException(
-                BeanUtils
-                        .getBean(LocalizationService.class)
-                        .localize("exception.unauthorized", new Object[]{message}, localizationService)
-        );
-    }
+
 }
+
+

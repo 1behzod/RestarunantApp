@@ -36,8 +36,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDTO> handleBadRequestException(BadRequestException e, HttpServletRequest httpServletRequest) {
         log.error(e.getMessage(), e);
         log.info("HttpServletRequest : {}", httpServletRequest);
-        String localizedMessage = localizationService.localize(e.getMessage());
-        return get(e.title, localizedMessage, e.getStatus(), httpServletRequest.getRequestURI());
+        return get(e.title, e.getMessage(), e.getStatus(), httpServletRequest.getRequestURI());
     }
 
     @ExceptionHandler(NotFoundException.class)

@@ -11,6 +11,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -20,20 +21,20 @@ public class LocalizationService {
 
     MessageSource messageSource;
 
-    public String localize(String key, Object... args) {
-        return messageSource.getMessage(key, args, getLocale());
+    public String localize(String code, Object... params) {
+        return messageSource.getMessage(code, params, code, getLocale());
     }
-
- /*   public String localize(String code, String message) {
-        return messageSource.getMessage(code, null, getLocale());
-    }*/
 
     public String localize(String code) {
-        return this.localize(code, null, code, getLocale());
+        return messageSource.getMessage(code, null, code, getLocale());
     }
 
-    public String localize(String code, String defaultMessage) {
-        return messageSource.getMessage(code, null, defaultMessage, getLocale());
+    public String localize(String code, String param) {
+        return messageSource.getMessage(code, List.of(param).toArray(), code, getLocale());
+    }
+
+    public String localize(String code, String... params) {
+        return messageSource.getMessage(code, params, code, getLocale());
     }
 
     public static Locale getLocale() {
@@ -56,7 +57,7 @@ public class LocalizationService {
     }
 
     private static HttpServletRequest getCurrentRequest() {
-        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         if (requestAttributes != null) {
             return ((ServletRequestAttributes) requestAttributes).getRequest();
         }

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import uz.behzod.restaurantApp.constants.CacheConstants;
 import uz.behzod.restaurantApp.domain.auth.User;
+import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.user.UserDTO;
 import uz.behzod.restaurantApp.dto.user.UserDetailDTO;
@@ -37,28 +38,28 @@ public class UserService extends BaseService {
 
     private void validate(UserDTO userDTO) {
         if (!StringUtils.hasLength(userDTO.getFirstName())) {
-            throw badRequestExceptionThrow("Name is required").get();
+            throw badRequestExceptionThrow(REQUIRED, NAME).get();
         }
         if (!StringUtils.hasLength(userDTO.getUsername())) {
-            throw badRequestExceptionThrow("Username is required").get();
+            throw badRequestExceptionThrow(REQUIRED, USERNAME).get();
         }
         if (!StringUtils.hasLength(userDTO.getPassword())) {
-            throw badRequestExceptionThrow("Password is required").get();
+            throw badRequestExceptionThrow(REQUIRED, PASSWORD).get();
         }
         if (userDTO.getBranchId() == null) {
-            throw badRequestExceptionThrow("BranchId is required").get();
+            throw badRequestExceptionThrow(REQUIRED, BRANCH).get();
         }
         if (userDTO.getRole() == null) {
-            throw badRequestExceptionThrow("Role is required").get();
+            throw badRequestExceptionThrow(REQUIRED, ROLE).get();
         }
         if (userDTO.getDepartmentId() == null) {
-            throw badRequestExceptionThrow("DepartmentId is required").get();
+            throw badRequestExceptionThrow(REQUIRED, DEPARTMENT).get();
         }
         if (userDTO.getPositionId() == null) {
-            throw badRequestExceptionThrow("PositionId is required").get();
+            throw badRequestExceptionThrow(REQUIRED,POSITION).get();
         }
         if (userDTO.getCompanyId() == null) {
-            throw badRequestExceptionThrow("CompanyId is required").get();
+            throw badRequestExceptionThrow(REQUIRED, COMPANY).get();
         }
 
 
@@ -98,16 +99,9 @@ public class UserService extends BaseService {
             userRepository.save(user);
             cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
             return user.getId();
-        }).orElseThrow(notFoundExceptionThrow("User not found with id: " + id));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
     }
 
-/*    @Transactional
-    public void delete(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw (notFoundExceptionThrow("User not found")).get();
-        }
-        userRepository.deleteById(id);
-    }*/
 
     @Transactional
     public void delete(Long id) {
@@ -117,7 +111,7 @@ public class UserService extends BaseService {
                     userRepository.deleteById(id);
                     cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
                     return user;
-                }).orElseThrow(notFoundExceptionThrow("User not found with id: " + id));
+                }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
     }
 
     public UserDetailDTO get(Long id) {
@@ -136,7 +130,7 @@ public class UserService extends BaseService {
             userDetailDTO.setCompany(user.getCompany().toCommonDTO());
             return userDetailDTO;
 
-        }).orElseThrow(notFoundExceptionThrow("User not found with id: " + id));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
 
     }
 
@@ -172,7 +166,7 @@ public class UserService extends BaseService {
                     cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
                     return user.getId();
                 })
-                .orElseThrow(notFoundExceptionThrow("User not found with id: " + id));
+                .orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
     }
 
 }
