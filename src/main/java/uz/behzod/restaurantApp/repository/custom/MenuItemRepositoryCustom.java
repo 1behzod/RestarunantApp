@@ -7,5 +7,6 @@ import uz.behzod.restaurantApp.filters.BaseFilter;
 
 @Repository
 public interface MenuItemRepositoryCustom {
+
     ResultList<MenuItem> getResultList(BaseFilter filter);
 }
