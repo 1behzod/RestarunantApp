@@ -7,6 +7,5 @@ import uz.behzod.restaurantApp.filters.BaseFilter;
 
 @Repository
 public interface BranchRepositoryCustom {
-
     ResultList<Branch> getResultList(BaseFilter filter);
 }

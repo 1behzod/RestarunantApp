@@ -7,6 +7,5 @@ import uz.behzod.restaurantApp.filters.BaseFilter;
 
 @Repository
 public interface FileUploadRepositoryCustom {
-
     ResultList<FileUpload> getResultList(BaseFilter filter);
 }
