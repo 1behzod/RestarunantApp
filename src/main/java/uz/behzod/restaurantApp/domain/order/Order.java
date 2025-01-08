@@ -12,13 +12,17 @@ import uz.behzod.restaurantApp.domain.SimpleEntity;
 import uz.behzod.restaurantApp.domain.auth.User;
 import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.enums.OrderStatus;
+import uz.behzod.restaurantApp.enums.PaymentStatus;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "order")
+@Table(name = "orders")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SQLDelete(sql = "UPDATE order SET deleted = 'true' WHERE id=?")
 public class Order extends SimpleEntity {
@@ -49,6 +53,15 @@ public class Order extends SimpleEntity {
     @Enumerated(EnumType.STRING)
     OrderStatus status = OrderStatus.NEW;
 
+    @Column(name = "total_price", scale = 2, precision = 25)
+    BigDecimal totalPrice;
 
+    @Column(name = "payment_status")
+    @Enumerated(EnumType.STRING)
+    PaymentStatus paymentStatus = PaymentStatus.NOT_PAID;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id")
+    List<OrderItem> items = new ArrayList<>();
 
 }
