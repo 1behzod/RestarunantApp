@@ -55,6 +55,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/v1/regions/**").permitAll()
                                 .requestMatchers("/v1/districts/**").permitAll()
                                 .requestMatchers("/v1/caches/**").permitAll()
+                                .requestMatchers("/v1/orders/**").permitAll()
                                 .requestMatchers("/files/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .anyRequest()

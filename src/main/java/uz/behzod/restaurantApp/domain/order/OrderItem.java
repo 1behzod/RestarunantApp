@@ -41,6 +41,9 @@ public class OrderItem extends SimpleEntity {
     @JoinColumn(name = "unit_id", insertable = false, updatable = false)
     Unit unit;
 
+    @Column(name = "qty", scale = 2, precision = 25)
+    BigDecimal qty;
+
     @Column(name = "price", scale = 2, precision = 25)
     BigDecimal price;
 

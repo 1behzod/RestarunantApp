@@ -31,9 +31,6 @@ public class Order extends SimpleEntity {
     @Column(name = "uid", length = 50, unique = true, nullable = false)
     String uid;
 
-    @Column(name = "order_date")
-    LocalDateTime orderDate = LocalDateTime.now();
-
     @Column(name = "waiter_id")
     Long waiterId;
 
@@ -51,7 +48,7 @@ public class Order extends SimpleEntity {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    OrderStatus status = OrderStatus.NEW;
+    OrderStatus status;
 
     @Column(name = "total_price", scale = 2, precision = 25)
     BigDecimal totalPrice;
@@ -59,6 +56,9 @@ public class Order extends SimpleEntity {
     @Column(name = "payment_status")
     @Enumerated(EnumType.STRING)
     PaymentStatus paymentStatus = PaymentStatus.NOT_PAID;
+
+    @Column(name = "order_date")
+    LocalDateTime orderDate;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id")

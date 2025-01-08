@@ -19,6 +19,7 @@ public interface MessageConstants {
     String USERNAME = " username";
     String PASSWORD = " password";
     String POSITION = " position";
+    String QTY = " qty";
 
 
     //Entities
@@ -32,7 +33,6 @@ public interface MessageConstants {
     String UNIT = "unit";
     String ROLE = "role";
     String USER = "user";
-
 
 
 }
