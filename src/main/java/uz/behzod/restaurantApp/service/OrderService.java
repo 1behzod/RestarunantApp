@@ -19,6 +19,7 @@ import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.branch.BranchDTO;
 import uz.behzod.restaurantApp.dto.branch.BranchDetailDTO;
 import uz.behzod.restaurantApp.dto.branch.BranchListDTO;
+import uz.behzod.restaurantApp.dto.menu.MenuItemSalesSummary;
 import uz.behzod.restaurantApp.dto.order.OrderDTO;
 import uz.behzod.restaurantApp.dto.order.OrderItemDTO;
 import uz.behzod.restaurantApp.enums.OrderStatus;
@@ -94,5 +95,26 @@ public class OrderService extends BaseService {
             orderItemRepository.save(orderItem);
         }
         return order.getId();
+    }
+
+
+    public ResultList<MenuItemSalesSummary> getMenuItemSalesForDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return orderRepository.getMenuItemSalesForDateRange(startDate, endDate);
+    }
+
+    public ResultList<MenuItemSalesSummary> getMenuItemSalesForToday() {
+        return orderRepository.getMenuItemSalesForToday();
+    }
+
+    public ResultList<MenuItemSalesSummary> getMenuItemSalesForThisWeek() {
+        return orderRepository.getMenuItemSalesForThisWeek();
+    }
+
+    public ResultList<MenuItemSalesSummary> getMenuItemSalesForThisMonth() {
+        return orderRepository.getMenuItemSalesForThisMonth();
+    }
+
+    public ResultList<MenuItemSalesSummary> getMenuItemSalesForSpecificDay(LocalDateTime date) {
+        return orderRepository.getMenuItemSalesForSpecificDay(date);
     }
 }
