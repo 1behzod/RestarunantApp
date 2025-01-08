@@ -12,6 +12,7 @@ import uz.behzod.restaurantApp.domain.SimpleEntity;
 import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.domain.menu.MenuItem;
 import uz.behzod.restaurantApp.domain.unit.Unit;
+import uz.behzod.restaurantApp.dto.menu.MenuItemSalesSummary;
 import uz.behzod.restaurantApp.enums.OrderItemStatus;
 
 import java.math.BigDecimal;
@@ -20,6 +21,20 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@SqlResultSetMappings(
+        @SqlResultSetMapping(
+                name = "MenuItemSalesSummaryMapping",
+                classes = @ConstructorResult(
+                        targetClass = MenuItemSalesSummary.class,
+                        columns = {
+                                @ColumnResult(name = "menuItemId", type = Long.class),
+                                @ColumnResult(name = "totalOrders", type = Long.class),
+                                @ColumnResult(name = "totalQtySold", type = BigDecimal.class),
+                                @ColumnResult(name = "totalSales", type = BigDecimal.class)
+                        }
+                )
+        )
+)
 @Table(name = "order_item")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @SQLDelete(sql = "UPDATE order_item SET deleted = 'true' WHERE id=?")
