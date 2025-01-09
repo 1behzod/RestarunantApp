@@ -19,10 +19,15 @@ spring:
 
   cache:
     type: jcache
-#    jcache:
-#      config: classpath:uz.behzod.restaurantApp.config.CacheConfiguration
 
 logging:
   level:
     org.springframework.cache: INFO
     org.ehcache: INFO
+
+security:
+  authentication:
+    jwt:
+      secret-key: ADJKLSADJKLsjdjkUEHheFDJFHDJHJDHFkjfsdjfkjsfsieufieujzxxxxoiefuwpe0wOISUdfhzdjfhaishiohzjhsfiusfgfgisugfsgfawwhyfoaw
+      token-validity-in-seconds: 86400
+      token-validity-in-seconds-for-remember-me: 2592000

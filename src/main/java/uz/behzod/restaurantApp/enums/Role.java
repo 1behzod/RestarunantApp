@@ -9,5 +9,13 @@ import lombok.Getter;
 public enum Role {
     SUPER_ADMIN,
     ADMIN,
-    WAITER
-}
+    WAITER;
+
+    private final String name;
+    private final String code;
+
+    Role() {
+        this.code = this.name();
+        this.name = this.getName();
+    }
+    }

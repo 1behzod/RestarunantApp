@@ -4,7 +4,6 @@ public interface MessageConstants {
 
     String ENTITY_NOT_FOUND = "entity.not.found";
     String ENTITY_NOT_FOUND_WITH = "entity.not.found.with";
-
     String ENTITY_ALREADY_EXISTS = "entity.already.exists";
     String ENTITY_ALREADY_EXISTS_WITH = "entity.already.exists.with";
 
