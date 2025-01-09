@@ -7,9 +7,11 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import uz.behzod.restaurantApp.dto.token.TokenDTO;
 import uz.behzod.restaurantApp.dto.user.UserDTO;
 import uz.behzod.restaurantApp.dto.user.UserDetailDTO;
 import uz.behzod.restaurantApp.dto.user.UserListDTO;
+import uz.behzod.restaurantApp.dto.user.UserLoginDTO;
 import uz.behzod.restaurantApp.enums.UserStatus;
 import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.service.UserService;
@@ -52,5 +54,12 @@ public class UserController {
     public ResponseEntity<Void> updateStatus(@PathVariable Long id, @RequestParam UserStatus status) {
         userService.updateStatus(id, status);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<TokenDTO> login(@RequestBody UserLoginDTO userLoginDTO) {
+        boolean rememberMe = userLoginDTO.isRememberMe();
+        TokenDTO tokenDTO = userService.login(userLoginDTO, rememberMe);
+        return ResponseEntity.ok(tokenDTO);
     }
 }

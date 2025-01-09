@@ -85,5 +85,12 @@ public class User extends SimpleEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "company_id", insertable = false, updatable = false)
     Company company;
+
+    @Column(name = "token_id")
+    Long tokenId;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "token_id", insertable = false, updatable = false)
+    UserToken token;
 }
 

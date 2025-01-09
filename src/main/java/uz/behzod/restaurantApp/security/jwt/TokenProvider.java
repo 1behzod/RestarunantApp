@@ -3,8 +3,10 @@ package uz.behzod.restaurantApp.security.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +35,7 @@ public class TokenProvider implements InitializingBean, AuthConstants {
 
     SecretKey key;
 
-    @Value("${security.authentication.jwt.secret-key}")
+   /* @Value("${security.authentication.jwt.secret-key}")
     String secretKey;
 
     @Value("${security.authentication.jwt.token-validity-in-seconds}")
@@ -68,7 +70,6 @@ public class TokenProvider implements InitializingBean, AuthConstants {
             departmentId = customUser.getDepartmentId();
             tin = customUser.getTin();
         }
-
         return createToken(authentication.getName(), authorities, rememberMe, userId, companyId, branchId, departmentId, language, tin);
     }
 
@@ -161,6 +162,32 @@ public class TokenProvider implements InitializingBean, AuthConstants {
             log.trace("Invalid JWT token trace.", e);
         }
         return false;
+    }*/
+
+
+    private final long tokenValidityInSeconds = 3600; // 1 hour
+    private final long tokenValidityInSecondsForRememberMe = 604800; // 7 days
+
+    public String createToken(String username, boolean rememberMe) {
+        long now = System.currentTimeMillis();
+        long validity = rememberMe ? tokenValidityInSecondsForRememberMe : tokenValidityInSeconds;
+
+        Date expiryDate = new Date(now + validity * 1000);
+
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date(now))
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, "your-secret-key")
+                .compact();
     }
 
+    public int getTokenExpiryInSeconds(boolean rememberMe) {
+        return rememberMe ? (int) tokenValidityInSecondsForRememberMe : (int) tokenValidityInSeconds;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+
+    }
 }

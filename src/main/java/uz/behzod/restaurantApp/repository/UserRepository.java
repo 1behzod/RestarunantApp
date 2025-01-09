@@ -16,7 +16,7 @@ public interface UserRepository extends BaseRepository<User, Long>, UserReposito
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u WHERE u.username = :username AND u.deleted = false AND u.id != :id")
     boolean existsByUsernameAndDeletedIsFalseAndIdNot(@Param("id") Long id, @Param("username") String username);
 
-    Optional<User> findFirstByUsernameAndDeletedIsFalse(String login);
+    Optional<User> findByUsernameAndDeletedIsFalse(String username);
 
 
 

@@ -16,15 +16,18 @@ import java.util.List;
 
 @Component("userDetailsService")
 @Slf4j
-
 public class DomainUserDetailsService extends BaseService implements UserDetailsService {
 
-    UserRepository userRepository;
+    public DomainUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(final String username) {
+    public UserDetails loadUserByUsername(String username) {
         return userRepository
-                .findFirstByUsernameAndDeletedIsFalse(username)
+                .findByUsernameAndDeletedIsFalse(username)
                 .map(this::createSpringSecurityUser)
                 .orElseThrow(() -> badRequestExceptionThrow(ENTITY_NOT_FOUND_WITH, USER, NAME, username).get());
     }

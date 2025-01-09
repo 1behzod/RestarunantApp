@@ -6,6 +6,13 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.token.TokenService;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,12 +21,16 @@ import uz.behzod.restaurantApp.constants.CacheConstants;
 import uz.behzod.restaurantApp.domain.auth.User;
 import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.dto.base.ResultList;
+import uz.behzod.restaurantApp.dto.token.TokenDTO;
 import uz.behzod.restaurantApp.dto.user.UserDTO;
 import uz.behzod.restaurantApp.dto.user.UserDetailDTO;
 import uz.behzod.restaurantApp.dto.user.UserListDTO;
+import uz.behzod.restaurantApp.dto.user.UserLoginDTO;
 import uz.behzod.restaurantApp.enums.UserStatus;
 import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.UserRepository;
+import uz.behzod.restaurantApp.security.DomainUserDetailsService;
+import uz.behzod.restaurantApp.security.jwt.TokenProvider;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +46,10 @@ public class UserService extends BaseService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     CacheService cacheService;
+    AuthenticationManager authenticationManager;
+    TokenProvider tokenProvider;
+    UserDetailsService userDetailsService;
+    DomainUserDetailsService domainUserDetailsService;
 
     private void validate(UserDTO userDTO) {
         if (!StringUtils.hasLength(userDTO.getFirstName())) {
@@ -56,13 +71,13 @@ public class UserService extends BaseService {
             throw badRequestExceptionThrow(REQUIRED, DEPARTMENT).get();
         }
         if (userDTO.getPositionId() == null) {
-            throw badRequestExceptionThrow(REQUIRED,POSITION).get();
+            throw badRequestExceptionThrow(REQUIRED, POSITION).get();
         }
         if (userDTO.getCompanyId() == null) {
             throw badRequestExceptionThrow(REQUIRED, COMPANY).get();
         }
 
-
+// AccountService  UserSessionService
     }
 
     @Transactional
@@ -99,7 +114,7 @@ public class UserService extends BaseService {
             userRepository.save(user);
             cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
             return user.getId();
-        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, USER));
     }
 
 
@@ -111,7 +126,7 @@ public class UserService extends BaseService {
                     userRepository.deleteById(id);
                     cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
                     return user;
-                }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
+                }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, USER));
     }
 
     public UserDetailDTO get(Long id) {
@@ -130,7 +145,7 @@ public class UserService extends BaseService {
             userDetailDTO.setCompany(user.getCompany().toCommonDTO());
             return userDetailDTO;
 
-        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, USER));
 
     }
 
@@ -166,9 +181,25 @@ public class UserService extends BaseService {
                     cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
                     return user.getId();
                 })
-                .orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
+                .orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, USER));
     }
 
+    public TokenDTO login(UserLoginDTO userLoginDTO, boolean rememberMe) {
+        UserDetails userDetails = domainUserDetailsService.loadUserByUsername(userLoginDTO.getUsername());
+
+        if (!passwordEncoder.matches(userLoginDTO.getPassword(), userDetails.getPassword())) {
+            throw new BadCredentialsException("Invalid username or password");
+        }
+
+        String jwt = tokenProvider.createToken(userDetails.getUsername(), rememberMe);
+
+        TokenDTO tokenDTO = new TokenDTO();
+        tokenDTO.setAccess_token(jwt);
+        tokenDTO.setToken_type("Bearer");
+        tokenDTO.setExpire(tokenProvider.getTokenExpiryInSeconds(rememberMe));
+        return tokenDTO;
+    }
 }
+
 
 
