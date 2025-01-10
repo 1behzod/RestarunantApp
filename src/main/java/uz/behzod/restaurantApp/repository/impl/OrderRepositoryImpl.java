@@ -54,9 +54,6 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 
     }
 
-
-
-
     @Override
     public ResultList<MenuItemSalesSummary> getMenuItemSalesForToday() {
         LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay().plusMinutes(1);

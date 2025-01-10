@@ -48,9 +48,6 @@ public class OrderService extends BaseService {
     MenuItemRepository menuItemRepository;
     OrderItemRepository orderItemRepository;
 
-    private void validate(OrderDTO orderDTO) {
-    }
-
     private void validateItem(OrderItemDTO orderItemDTO) {
         if (orderItemDTO.getMenuItemId() == null) {
             throw badRequestExceptionThrow(REQUIRED, MENU_ITEM).get();

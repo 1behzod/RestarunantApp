@@ -6,7 +6,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +20,7 @@ import uz.behzod.restaurantApp.constants.AuthConstants;
 import uz.behzod.restaurantApp.security.CustomUser;
 
 import javax.crypto.SecretKey;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,7 +31,7 @@ public class TokenProvider implements InitializingBean, AuthConstants {
 
     SecretKey key;
 
-   /* @Value("${security.authentication.jwt.secret-key}")
+    @Value("${security.authentication.jwt.secret-key}")
     String secretKey;
 
     @Value("${security.authentication.jwt.token-validity-in-seconds}")
@@ -47,57 +43,6 @@ public class TokenProvider implements InitializingBean, AuthConstants {
     @Override
     public void afterPropertiesSet() {
         this.key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretKey));
-    }
-
-    public String createToken(Authentication authentication, boolean rememberMe) {
-        String authorities = authentication
-                .getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
-        Long userId = null;
-        Long companyId = null;
-        Long branchId = null;
-        Long departmentId = null;
-        String language = null;
-        String tin = null;
-
-        if (authentication.getPrincipal() instanceof CustomUser customUser) {
-            userId = customUser.getUserId();
-            companyId = customUser.getCompanyId();
-            branchId = customUser.getBranchId();
-            departmentId = customUser.getDepartmentId();
-            tin = customUser.getTin();
-        }
-        return createToken(authentication.getName(), authorities, rememberMe, userId, companyId, branchId, departmentId, language, tin);
-    }
-
-    private String createToken(String username, String role, boolean rememberMe, Long userId, Long companyId, Long branchId, Long departmentId, String language, String tin) {
-        return Jwts.builder()
-                .setSubject(username) //subject()
-                .claim(AUTHORITIES_KEY, role)
-                .claim(USER_ID, userId)
-                .claim(COMPANY_ID, companyId)
-                .claim(BRANCH_ID, branchId)
-                .claim(DEPARTMENT_ID, departmentId)
-                .claim(LANGUAGE, language)
-                .claim(TIN, tin)
-                .setExpiration(getNextExpiration(rememberMe)) //expiration()
-                .signWith(key)
-                .compact();
-    }
-
-
-    private Date getNextExpiration(boolean rememberMe) {
-        long now = (new Date()).getTime();
-        Date validity;
-        if (rememberMe) {
-            validity = new Date(now + tokenValidityInSecondsForRememberMe * 1000);
-        } else {
-            validity = new Date(now + tokenValidityInSeconds * 1000);
-        }
-        return validity;
     }
 
     public Authentication getAuthentication(final String token) {
@@ -162,32 +107,42 @@ public class TokenProvider implements InitializingBean, AuthConstants {
             log.trace("Invalid JWT token trace.", e);
         }
         return false;
-    }*/
+    }
 
 
-    private final long tokenValidityInSeconds = 3600; // 1 hour
-    private final long tokenValidityInSecondsForRememberMe = 604800; // 7 days
-
-    public String createToken(String username, boolean rememberMe) {
+    public Map<String, String> createToken(String username, boolean rememberMe) {
         long now = System.currentTimeMillis();
-        long validity = rememberMe ? tokenValidityInSecondsForRememberMe : tokenValidityInSeconds;
+        Date accessTokenExpiry = getNextExpiration(rememberMe);
 
-        Date expiryDate = new Date(now + validity * 1000);
-
-        return Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date(now))
-                .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, "your-secret-key")
+                .setExpiration(accessTokenExpiry)
+                .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
+
+        String refreshToken = Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date(now))
+                .signWith(SignatureAlgorithm.HS512, key)
+                .compact();
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
+
+        return tokens;
     }
 
-    public int getTokenExpiryInSeconds(boolean rememberMe) {
-        return rememberMe ? (int) tokenValidityInSecondsForRememberMe : (int) tokenValidityInSeconds;
-    }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-
+    public Date getNextExpiration(boolean rememberMe) {
+        long now = (new Date()).getTime();
+        Date validity;
+        if (rememberMe) {
+            validity = new Date(now + tokenValidityInSecondsForRememberMe * 1000);
+        } else {
+            validity = new Date(now + tokenValidityInSeconds * 1000);
+        }
+        return validity;
     }
 }

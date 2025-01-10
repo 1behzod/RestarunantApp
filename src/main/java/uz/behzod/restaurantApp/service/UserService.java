@@ -33,6 +33,7 @@ import uz.behzod.restaurantApp.security.DomainUserDetailsService;
 import uz.behzod.restaurantApp.security.jwt.TokenProvider;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -186,19 +187,20 @@ public class UserService extends BaseService {
 
     public TokenDTO login(UserLoginDTO userLoginDTO, boolean rememberMe) {
         UserDetails userDetails = domainUserDetailsService.loadUserByUsername(userLoginDTO.getUsername());
-
         if (!passwordEncoder.matches(userLoginDTO.getPassword(), userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid username or password");
         }
-
-        String jwt = tokenProvider.createToken(userDetails.getUsername(), rememberMe);
+        Map<String, String> tokens = tokenProvider.createToken(userDetails.getUsername(), rememberMe);
 
         TokenDTO tokenDTO = new TokenDTO();
-        tokenDTO.setAccess_token(jwt);
+        tokenDTO.setAccess_token(tokens.get("accessToken"));
+        tokenDTO.setRefresh_token(tokens.get("refreshToken"));
         tokenDTO.setToken_type("Bearer");
-        tokenDTO.setExpire(tokenProvider.getTokenExpiryInSeconds(rememberMe));
+        tokenDTO.setExpire(tokenProvider.getNextExpiration(rememberMe));
         return tokenDTO;
     }
+
+
 }
 
 

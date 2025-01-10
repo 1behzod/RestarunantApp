@@ -6,15 +6,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TokenDTO {
 
-    String scope;
-
-    Integer expire;
+    Date expire;
 
     String access_token;
 

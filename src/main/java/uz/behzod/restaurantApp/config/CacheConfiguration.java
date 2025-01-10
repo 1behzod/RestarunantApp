@@ -24,11 +24,6 @@ import uz.behzod.restaurantApp.domain.unit.Unit;
 public class CacheConfiguration implements CacheConstants {
 
 
-    /*@Bean
-    public HibernatePropertiesCustomizer hibernatePropertiesCustomizer(javax.cache.CacheManager cacheManager) {
-        return hibernateProperties -> hibernateProperties.put(ConfigSettings.CACHE_MANAGER, cacheManager);
-    }*/
-
     @Bean
     public HibernatePropertiesCustomizer hibernatePropertiesCustomizer(javax.cache.CacheManager cacheManager) {
         return hibernateProperties -> {

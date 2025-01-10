@@ -1,5 +1,8 @@
 package uz.behzod.restaurantApp.security;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,13 +17,11 @@ import uz.behzod.restaurantApp.service.BaseService;
 import java.util.List;
 
 
-@Component("userDetailsService")
+@Component()
 @Slf4j
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class DomainUserDetailsService extends BaseService implements UserDetailsService {
-
-    public DomainUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     private final UserRepository userRepository;
 
@@ -34,10 +35,10 @@ public class DomainUserDetailsService extends BaseService implements UserDetails
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(User user) {
         if (UserStatus.PENDING == user.getStatus()) {
-            throw badRequestExceptionThrow("User is not activated").get();
+            throw badRequestExceptionThrow(NOT_ACTIVATED, USER).get();
         }
         if (UserStatus.IN_ACTIVE == user.getStatus()) {
-            throw badRequestExceptionThrow("User is inactivated").get();
+            throw badRequestExceptionThrow(NOT_ACTIVATED, USER).get();
         }
 
         return new CustomUser(
