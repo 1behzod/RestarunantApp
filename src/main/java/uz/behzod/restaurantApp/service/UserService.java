@@ -22,10 +22,7 @@ import uz.behzod.restaurantApp.domain.auth.User;
 import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.token.TokenDTO;
-import uz.behzod.restaurantApp.dto.user.UserDTO;
-import uz.behzod.restaurantApp.dto.user.UserDetailDTO;
-import uz.behzod.restaurantApp.dto.user.UserListDTO;
-import uz.behzod.restaurantApp.dto.user.UserLoginDTO;
+import uz.behzod.restaurantApp.dto.user.*;
 import uz.behzod.restaurantApp.enums.UserStatus;
 import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.UserRepository;
@@ -77,8 +74,6 @@ public class UserService extends BaseService {
         if (userDTO.getCompanyId() == null) {
             throw badRequestExceptionThrow(REQUIRED, COMPANY).get();
         }
-
-// AccountService  UserSessionService
     }
 
     @Transactional
@@ -200,6 +195,28 @@ public class UserService extends BaseService {
         return tokenDTO;
     }
 
+//    private void validateForRegister(UserRegisterDTO userRegisterDTO) {
+//        if (!StringUtils.hasLength(userRegisterDTO.getFirstName())) {
+//            throw badRequestExceptionThrow(REQUIRED, NAME).get();
+//        }
+//        if (!StringUtils.hasLength(userRegisterDTO.getUsername())) {
+//            throw badRequestExceptionThrow(REQUIRED, USERNAME).get();
+//        }
+//        if (!StringUtils.hasLength(userRegisterDTO.getPassword())) {
+//            throw badRequestExceptionThrow(REQUIRED, PASSWORD).get();
+//        }
+//    }
+//
+//    public Long register(UserRegisterDTO userRegisterDTO) {
+//        this.validateForRegister(userRegisterDTO);
+//        User user = new User();
+//        user.setFirstName(userRegisterDTO.getFirstName());
+//        user.setLastName(userRegisterDTO.getLastName());
+//        user.setPatronymic(userRegisterDTO.getPatronymic());
+//        user.setUsername(userRegisterDTO.getUsername());
+//        user.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
+//        return userRepository.save(user).getId();
+//    }
 
 }
 

@@ -8,10 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.behzod.restaurantApp.dto.token.TokenDTO;
-import uz.behzod.restaurantApp.dto.user.UserDTO;
-import uz.behzod.restaurantApp.dto.user.UserDetailDTO;
-import uz.behzod.restaurantApp.dto.user.UserListDTO;
-import uz.behzod.restaurantApp.dto.user.UserLoginDTO;
+import uz.behzod.restaurantApp.dto.user.*;
 import uz.behzod.restaurantApp.enums.UserStatus;
 import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.service.UserService;
@@ -20,6 +17,7 @@ import uz.behzod.restaurantApp.service.UserService;
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@CrossOrigin(origins = "http://localhost:63342") // Allow frontend to send requests
 public class UserController {
 
     UserService userService;
@@ -56,10 +54,16 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<TokenDTO> login(@RequestBody UserLoginDTO userLoginDTO) {
         boolean rememberMe = userLoginDTO.isRememberMe();
         TokenDTO tokenDTO = userService.login(userLoginDTO, rememberMe);
         return ResponseEntity.ok(tokenDTO);
     }
+
+/*    @PostMapping("/register")
+    public ResponseEntity<Long> register(@RequestBody UserRegisterDTO userRegisterDTO) {
+        userService.register(userRegisterDTO);
+        return ResponseEntity.ok().build();
+    }*/
 }

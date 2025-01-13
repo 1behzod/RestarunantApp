@@ -1,0 +1,49 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.restaurant-header {
+    text-align: center;
+    background-color: #2e3a59;
+    color: white;
+    padding: 20px;
+}
+
+.restaurant-header h1 {
+    font-size: 3rem;
+    margin: 0;
+}
+
+.restaurant-header p {
+    font-size: 1.2rem;
+}
+
+.restaurant-info, .user-details {
+    padding: 20px;
+    margin: 20px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h2 {
+    color: #333;
+}
+
+#logoutButton {
+    padding: 10px 20px;
+    background-color: #d9534f;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+#logoutButton:hover {
+    background-color: #c9302c;
+}
