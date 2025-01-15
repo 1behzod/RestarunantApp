@@ -19,6 +19,8 @@ import uz.behzod.restaurantApp.dto.branch.BranchDetailDTO;
 import uz.behzod.restaurantApp.dto.branch.BranchListDTO;
 import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.BranchRepository;
+import uz.behzod.restaurantApp.validator.NameValidator;
+import uz.behzod.restaurantApp.validator.Validator;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,14 +35,11 @@ public class BranchService extends BaseService {
 
     BranchRepository branchRepository;
 
+
     public void validate(BranchDTO branchDTO) {
 
-        if (!StringUtils.hasLength(branchDTO.getName())) {
-            throw badRequestExceptionThrow(REQUIRED, NAME).get();
-        }
-        if (branchDTO.getCompanyId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, COMPANY).get();
-        }
+        nameValidator.validate(branchDTO.getName());
+        companyValidator.validate(branchDTO.getCompanyId());
 
         if (branchDTO.getId() == null) {
             if (branchRepository.existsByNameIgnoreCaseAndCompanyId(branchDTO.getName(), branchDTO.getCompanyId())) {
@@ -48,7 +47,7 @@ public class BranchService extends BaseService {
             }
         } else {
             if (branchRepository.existsByNameIgnoreCaseAndCompanyIdAndIdNot(branchDTO.getName(), branchDTO.getCompanyId(), branchDTO.getId())) {
-                throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, BRANCH, NAME,  branchDTO.getName()).get();
+                throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, BRANCH, NAME, branchDTO.getName()).get();
             }
         }
     }
@@ -143,5 +142,5 @@ public class BranchService extends BaseService {
 
 
     //            throw badRequestExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, BRANCH, NAME, "Test").get();
-   //            throw badRequestExceptionThrow(ENTITY_ALREADY_EXISTS, BRANCH).get();
+    //            throw badRequestExceptionThrow(ENTITY_ALREADY_EXISTS, BRANCH).get();
 }

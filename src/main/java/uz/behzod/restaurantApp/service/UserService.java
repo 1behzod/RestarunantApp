@@ -50,30 +50,14 @@ public class UserService extends BaseService {
     DomainUserDetailsService domainUserDetailsService;
 
     private void validate(UserDTO userDTO) {
-        if (!StringUtils.hasLength(userDTO.getFirstName())) {
-            throw badRequestExceptionThrow(REQUIRED, NAME).get();
-        }
-        if (!StringUtils.hasLength(userDTO.getUsername())) {
-            throw badRequestExceptionThrow(REQUIRED, USERNAME).get();
-        }
-        if (!StringUtils.hasLength(userDTO.getPassword())) {
-            throw badRequestExceptionThrow(REQUIRED, PASSWORD).get();
-        }
-        if (userDTO.getBranchId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, BRANCH).get();
-        }
-        if (userDTO.getRole() == null) {
-            throw badRequestExceptionThrow(REQUIRED, ROLE).get();
-        }
-        if (userDTO.getDepartmentId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, DEPARTMENT).get();
-        }
-        if (userDTO.getPositionId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, POSITION).get();
-        }
-        if (userDTO.getCompanyId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, COMPANY).get();
-        }
+        nameValidator.validate(userDTO.getFirstName());
+        usernameValidator.validate(userDTO.getUsername());
+        passwordValidator.validate(userDTO.getPassword());
+        branchValidator.validate(userDTO.getBranchId());
+        roleValidator.validate(userDTO.getRole());
+        departmentValidator.validate(userDTO.getDepartmentId());
+        positionValidator.validate(userDTO.getPositionId());
+        companyValidator.validate(userDTO.getCompanyId());
     }
 
     @Transactional

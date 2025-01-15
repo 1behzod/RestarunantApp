@@ -31,12 +31,8 @@ public class MenuService extends BaseService {
     MenuRepository menuRepository;
 
     private void validate(MenuDTO menuDTO) {
-        if (!StringUtils.hasLength(menuDTO.getName())) {
-            throw badRequestExceptionThrow(REQUIRED, NAME).get();
-        }
-        if (menuDTO.getBranchId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, BRANCH).get();
-        }
+        nameValidator.validate(menuDTO.getName());
+        branchValidator.validate(menuDTO.getBranchId());
         if (menuDTO.getId() == null) {
             if (menuRepository.existsByNameAndBranchIdAndDeletedIsFalse(menuDTO.getName(), menuDTO.getBranchId())) {
                 throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, MENU, NAME, menuDTO.getName()).get();

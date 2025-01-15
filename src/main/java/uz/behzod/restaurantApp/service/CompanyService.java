@@ -35,15 +35,10 @@ public class CompanyService extends BaseService {
     CompanyRepository companyRepository;
 
     private void validate(CompanyDTO companyDTO) {
-        if (!StringUtils.hasLength(companyDTO.getName())) {
-            throw badRequestExceptionThrow(REQUIRED, NAME).get();
-        }
-        if (!StringUtils.hasLength(companyDTO.getTin())) {
-            throw badRequestExceptionThrow(REQUIRED, TIN).get();
-        }
-        if (!StringUtils.hasLength(companyDTO.getPinfl())) {
-            throw badRequestExceptionThrow(REQUIRED, PINFL).get();
-        }
+        nameValidator.validate(companyDTO.getName());
+        tinValidator.validate(companyDTO.getTin());
+        pinflValidator.validate(companyDTO.getPinfl());
+
         if (companyDTO.getId() == null) {
             if (companyRepository.existsByTin(companyDTO.getTin())) {
                 throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, COMPANY, TIN, companyDTO.getTin()).get();

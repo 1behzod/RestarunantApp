@@ -30,22 +30,11 @@ public class MenuItemService extends BaseService {
     MenuItemRepository menuItemRepository;
 
     private void validate(MenuItemDTO menuItemDTO) {
-        if (!StringUtils.hasLength(menuItemDTO.getName())) {
-            throw badRequestExceptionThrow(REQUIRED, NAME).get();
-        }
-        if (menuItemDTO.getMenuId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, MENU).get();
-        }
-        if (menuItemDTO.getPrice() == null) {
-            throw badRequestExceptionThrow(REQUIRED, PRICE).get();
-        }
-        if (menuItemDTO.getProductId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, PRODUCT).get();
-        }
-        if (menuItemDTO.getUnitId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, UNIT).get();
-        }
-
+        nameValidator.validate(menuItemDTO.getName());
+        menuValidator.validate(menuItemDTO.getMenuId());
+        priceValidator.validate(menuItemDTO.getPrice());
+        productValidator.validate(menuItemDTO.getProductId());
+        unitValidator.validate(menuItemDTO.getUnitId());
     }
 
     @Transactional

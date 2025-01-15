@@ -31,12 +31,8 @@ public class DepartmentService extends BaseService {
 
 
     private void validate(DepartmentDTO departmentDTO) {
-        if (!StringUtils.hasLength(departmentDTO.getName())) {
-            throw badRequestExceptionThrow(REQUIRED, NAME).get();
-        }
-        if (departmentDTO.getBranchId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, BRANCH).get();
-        }
+        nameValidator.validate(departmentDTO.getName());
+        branchValidator.validate(departmentDTO.getBranchId());
         if (departmentDTO.getId() == null) {
             if (departmentRepository.existsByNameIgnoreCaseAndBranchId(departmentDTO.getName(), departmentDTO.getBranchId())) {
                 throw conflictExceptionThrow(ENTITY_ALREADY_EXISTS_WITH, DEPARTMENT, NAME, departmentDTO.getName()).get();

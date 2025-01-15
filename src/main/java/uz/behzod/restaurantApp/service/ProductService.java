@@ -30,15 +30,9 @@ public class ProductService extends BaseService {
     ProductRepository productRepository;
 
     public void validate(ProductDTO productDTO) {
-        if (!StringUtils.hasLength(productDTO.getName())) {
-            throw badRequestExceptionThrow(REQUIRED, NAME).get();
-        }
-        if (productDTO.getDepartmentId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, DEPARTMENT).get();
-        }
-        if (productDTO.getBarcode() == null) {
-            throw badRequestExceptionThrow(REQUIRED, BARCODE).get();
-        }
+        nameValidator.validate(productDTO.getName());
+        departmentValidator.validate(productDTO.getDepartmentId());
+        barcodeValidator.validate(productDTO.getBarcode());
     }
 
 

@@ -33,6 +33,7 @@ public interface MessageConstants {
     String UNIT = "unit";
     String ROLE = "role";
     String USER = "user";
+    String ORDER = "order";
 
 
 }
