@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BistroBridge - Restaurant Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="container">
+        <h1>BistroBridge</h1>
+        <p>Effortlessly Manage Your Restaurant Operations</p>
+    </div>
+</header>
+
+<nav class="navbar">
+    <div class="container">
+        <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#menu">Menu</a></li>
+            <li><a href="#reservations">Reservations</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<section id="about" class="about">
+    <div class="container">
+        <h2>About Us</h2>
+        <p>BistroBridge is a state-of-the-art platform designed to help restaurant owners streamline their operations. From managing menus to handling reservations, our system offers everything you need to create a seamless dining experience for your customers.</p>
+    </div>
+</section>
+
+<section id="menu" class="menu">
+    <div class="container">
+        <h2>Menu Management</h2>
+        <p>Easily add, update, or remove items from your menu. Showcase your best dishes with high-quality images and detailed descriptions to entice customers.</p>
+        <button class="btn">Manage Menu</button>
+    </div>
+</section>
+
+<section id="reservations" class="reservations">
+    <div class="container">
+        <h2>Reservations</h2>
+        <p>Keep track of reservations and ensure your tables are always filled. Allow customers to book a table online with ease.</p>
+        <button class="btn">View Reservations</button>
+    </div>
+</section>
+
+<section id="contact" class="contact">
+    <div class="container">
+        <h2>Contact Us</h2>
+        <p>Have questions? Reach out to our support team, and we’ll be happy to assist you.</p>
+        <form>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+
+            <button type="submit" class="btn">Send Message</button>
+        </form>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2025 BistroBridge. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        background-color: #f8f8f8;
+        color: #333;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .main-header {
+        background-color: #2e3a59;
+        color: #fff;
+        text-align: center;
+        padding: 20px 0;
+    }
+
+    .navbar {
+        background-color: #444;
+        padding: 10px 0;
+    }
+
+    .navbar ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .navbar ul li {
+        margin: 0 15px;
+    }
+
+    .navbar ul li a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 1.1rem;
+    }
+
+    .navbar ul li a:hover {
+        text-decoration: underline;
+    }
+
+    section {
+        padding: 40px 0;
+    }
+
+    .about, .menu, .reservations, .contact {
+        background: #fff;
+        margin: 20px 0;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #444;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #2e3a59;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background-color: #1d253a;
+    }
+
+    .footer {
+        background: #2e3a59;
+        color: #fff;
+        text-align: center;
+        padding: 10px 0;
+        margin-top: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    input:focus, textarea:focus {
+        border-color: #2e3a59;
+        outline: none;
+    }
+</style>
+
+</body>
+</html>
+

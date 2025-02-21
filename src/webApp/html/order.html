@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Sales Dashboard | BistroBridge</title>
+    <link rel="stylesheet" href="css/order.css">
+</head>
+<body>
+<div class="container">
+    <h1>Welcome to BistroBridge Restaurant Dashboard</h1>
+
+    <div class="countdown">
+        <h2>Countdown to Special Event:</h2>
+        <div id="countdown-timer">Loading...</div>
+    </div>
+
+    <div class="date-picker">
+        <h2>Select Date Range for Sales Data:</h2>
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date" name="startDate">
+        <label for="end-date">End Date:</label>
+        <input type="date" id="end-date" name="endDate">
+        <button id="fetch-sales" class="btn">Fetch Sales</button>
+    </div>
+
+    <div class="sales-summary">
+        <h2>Menu Item Sales:</h2>
+        <table id="sales-table">
+            <thead>
+            <tr>
+                <th>Menu Item</th>
+                <th>Total Orders</th>
+                <th>Total Quantity Sold</th>
+                <th>Total Sales</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Dynamic rows will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="js/order.js"></script>
+</body>
+</html>

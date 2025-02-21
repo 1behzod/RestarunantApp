@@ -6,21 +6,23 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.behzod.restaurantApp.constants.CacheConstants;
 import uz.behzod.restaurantApp.domain.auth.User;
 import uz.behzod.restaurantApp.dto.base.ResultList;
-import uz.behzod.restaurantApp.dto.user.UserDTO;
-import uz.behzod.restaurantApp.dto.user.UserDetailDTO;
-import uz.behzod.restaurantApp.dto.user.UserListDTO;
+import uz.behzod.restaurantApp.dto.user.*;
 import uz.behzod.restaurantApp.enums.UserStatus;
 import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.UserRepository;
 import uz.behzod.restaurantApp.validator.ValidationContext;
 
+
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -35,6 +37,36 @@ public class UserService extends BaseService {
     PasswordEncoder passwordEncoder;
     CacheService cacheService;
     ValidationContext validationContext;
+    AuthenticationManager authenticationManager;
+    TokenProvider tokenProvider;
+    UserDetailsService userDetailsService;
+
+    private void validate(UserDTO userDTO) {
+        if (!StringUtils.hasLength(userDTO.getFirstName())) {
+            throw badRequestExceptionThrow(REQUIRED, NAME).get();
+        }
+        if (!StringUtils.hasLength(userDTO.getUsername())) {
+            throw badRequestExceptionThrow(REQUIRED, USERNAME).get();
+        }
+        if (!StringUtils.hasLength(userDTO.getPassword())) {
+            throw badRequestExceptionThrow(REQUIRED, PASSWORD).get();
+        }
+        if (userDTO.getBranchId() == null) {
+            throw badRequestExceptionThrow(REQUIRED, BRANCH).get();
+        }
+        if (userDTO.getRole() == null) {
+            throw badRequestExceptionThrow(REQUIRED, ROLE).get();
+        }
+        if (userDTO.getDepartmentId() == null) {
+            throw badRequestExceptionThrow(REQUIRED, DEPARTMENT).get();
+        }
+        if (userDTO.getPositionId() == null) {
+            throw badRequestExceptionThrow(REQUIRED, POSITION).get();
+        }
+        if (userDTO.getCompanyId() == null) {
+            throw badRequestExceptionThrow(REQUIRED, COMPANY).get();
+        }
+    }
 
     @Transactional
     public Long create(UserDTO userDTO) {
@@ -101,7 +133,7 @@ public class UserService extends BaseService {
             userDetailDTO.setCompany(user.getCompany().toCommonDTO());
             return userDetailDTO;
 
-        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, USER));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
 
     }
 
@@ -137,8 +169,46 @@ public class UserService extends BaseService {
                     cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
                     return user.getId();
                 })
-                .orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, USER));
+                .orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
     }
+
+    public TokenDTO login(UserLoginDTO userLoginDTO, boolean rememberMe) {
+        UserDetails userDetails = domainUserDetailsService.loadUserByUsername(userLoginDTO.getUsername());
+        if (!passwordEncoder.matches(userLoginDTO.getPassword(), userDetails.getPassword())) {
+            throw new BadCredentialsException("Invalid username or password");
+        }
+        Map<String, String> tokens = tokenProvider.createToken(userDetails.getUsername(), rememberMe);
+
+        TokenDTO tokenDTO = new TokenDTO();
+        tokenDTO.setAccess_token(tokens.get("accessToken"));
+        tokenDTO.setRefresh_token(tokens.get("refreshToken"));
+        tokenDTO.setToken_type("Bearer");
+        tokenDTO.setExpire(tokenProvider.getNextExpiration(rememberMe));
+        return tokenDTO;
+    }
+
+//    private void validateForRegister(UserRegisterDTO userRegisterDTO) {
+//        if (!StringUtils.hasLength(userRegisterDTO.getFirstName())) {
+//            throw badRequestExceptionThrow(REQUIRED, NAME).get();
+//        }
+//        if (!StringUtils.hasLength(userRegisterDTO.getUsername())) {
+//            throw badRequestExceptionThrow(REQUIRED, USERNAME).get();
+//        }
+//        if (!StringUtils.hasLength(userRegisterDTO.getPassword())) {
+//            throw badRequestExceptionThrow(REQUIRED, PASSWORD).get();
+//        }
+//    }
+//
+//    public Long register(UserRegisterDTO userRegisterDTO) {
+//        this.validateForRegister(userRegisterDTO);
+//        User user = new User();
+//        user.setFirstName(userRegisterDTO.getFirstName());
+//        user.setLastName(userRegisterDTO.getLastName());
+//        user.setPatronymic(userRegisterDTO.getPatronymic());
+//        user.setUsername(userRegisterDTO.getUsername());
+//        user.setPassword(passwordEncoder.encode(userRegisterDTO.getPassword()));
+//        return userRepository.save(user).getId();
+//    }
 
 }
 
