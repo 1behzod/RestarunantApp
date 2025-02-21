@@ -9,10 +9,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import uz.behzod.restaurantApp.constants.CacheConstants;
 import uz.behzod.restaurantApp.domain.auth.User;
-import uz.behzod.restaurantApp.domain.branch.Branch;
 import uz.behzod.restaurantApp.dto.base.ResultList;
 import uz.behzod.restaurantApp.dto.user.UserDTO;
 import uz.behzod.restaurantApp.dto.user.UserDetailDTO;
@@ -20,6 +18,7 @@ import uz.behzod.restaurantApp.dto.user.UserListDTO;
 import uz.behzod.restaurantApp.enums.UserStatus;
 import uz.behzod.restaurantApp.filters.BaseFilter;
 import uz.behzod.restaurantApp.repository.UserRepository;
+import uz.behzod.restaurantApp.validator.ValidationContext;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,39 +34,11 @@ public class UserService extends BaseService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     CacheService cacheService;
-
-    private void validate(UserDTO userDTO) {
-        if (!StringUtils.hasLength(userDTO.getFirstName())) {
-            throw badRequestExceptionThrow(REQUIRED, NAME).get();
-        }
-        if (!StringUtils.hasLength(userDTO.getUsername())) {
-            throw badRequestExceptionThrow(REQUIRED, USERNAME).get();
-        }
-        if (!StringUtils.hasLength(userDTO.getPassword())) {
-            throw badRequestExceptionThrow(REQUIRED, PASSWORD).get();
-        }
-        if (userDTO.getBranchId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, BRANCH).get();
-        }
-        if (userDTO.getRole() == null) {
-            throw badRequestExceptionThrow(REQUIRED, ROLE).get();
-        }
-        if (userDTO.getDepartmentId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, DEPARTMENT).get();
-        }
-        if (userDTO.getPositionId() == null) {
-            throw badRequestExceptionThrow(REQUIRED,POSITION).get();
-        }
-        if (userDTO.getCompanyId() == null) {
-            throw badRequestExceptionThrow(REQUIRED, COMPANY).get();
-        }
-
-
-    }
+    ValidationContext validationContext;
 
     @Transactional
     public Long create(UserDTO userDTO) {
-        this.validate(userDTO);
+        validationContext.validate(userDTO);
         User user = new User();
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
@@ -87,7 +58,7 @@ public class UserService extends BaseService {
     @Transactional
     public Long update(Long id, UserDTO userDTO) {
         userDTO.setId(id);
-        this.validate(userDTO);
+        validationContext.validate(userDTO);
         return userRepository.findById(id).map(user -> {
             user.setLastName(userDTO.getLastName());
             user.setPatronymic(userDTO.getPatronymic());
@@ -99,7 +70,7 @@ public class UserService extends BaseService {
             userRepository.save(user);
             cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
             return user.getId();
-        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, USER));
     }
 
 
@@ -111,7 +82,7 @@ public class UserService extends BaseService {
                     userRepository.deleteById(id);
                     cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
                     return user;
-                }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
+                }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, USER));
     }
 
     public UserDetailDTO get(Long id) {
@@ -130,7 +101,7 @@ public class UserService extends BaseService {
             userDetailDTO.setCompany(user.getCompany().toCommonDTO());
             return userDetailDTO;
 
-        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
+        }).orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, USER));
 
     }
 
@@ -166,7 +137,7 @@ public class UserService extends BaseService {
                     cacheService.evict(CacheConstants.USER_BY_LOGIN, user.getUsername());
                     return user.getId();
                 })
-                .orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND,USER));
+                .orElseThrow(notFoundExceptionThrow(ENTITY_NOT_FOUND, USER));
     }
 
 }
